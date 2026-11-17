@@ -54,3 +54,21 @@ test("usd prices tokens per model", () => {
   expect(usd({ model: "claude-sonnet-5-5", input: 1_000_000, output: 0, cacheRead: 0, cacheWrite: 0 })).toBeCloseTo(2);
   expect(usd({ model: "unknown-model", input: 1, output: 1, cacheRead: 0, cacheWrite: 0 })).toBeNaN();
 });
+
+test("callJudge returns null when a refusal leaves partial JSON", async () => {
+  const { fetch } = stubFetch({ ...message, content: [{ type: "text", text: '{"penalties":[' }], stop_reason: "refusal" });
+  await expect(createAnthropicClient("sk-test", { fetch }).callJudge({ system: "S", prompt: "P", tool: "ruling" })).resolves.toBeNull();
+});
+
+test("callJudge returns null when output is cut off at max_tokens", async () => {
+  const { fetch } = stubFetch({ ...message, content: [{ type: "text", text: '{"ruling":"FOR","confid' }], stop_reason: "max_tokens" });
+  await expect(createAnthropicClient("sk-test", { fetch }).callJudge({ system: "S", prompt: "P", tool: "verdict" })).resolves.toBeNull();
+});
+
+test("callJudge still throws API errors so the trial reports them", async () => {
+  const fetch = (async () =>
+    new Response(JSON.stringify({ type: "error", error: { type: "invalid_request_error", message: "bad" } }), {
+      status: 400, headers: { "content-type": "application/json" },
+    })) as typeof globalThis.fetch;
+  await expect(createAnthropicClient("sk-test", { fetch }).callJudge({ system: "S", prompt: "P", tool: "ruling" })).rejects.toThrow();
+});

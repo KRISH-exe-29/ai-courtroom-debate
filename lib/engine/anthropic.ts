@@ -92,17 +92,25 @@ export function createAnthropicClient(
     },
 
     async callJudge({ system: sys, prompt, tool }) {
-      const response = await sdk.beta.messages.parse({
-        model: JUDGE_MODEL,
-        max_tokens: 16000,
-        betas: [FALLBACK_BETA],
-        fallbacks: "default",
-        system: system(sys),
-        output_config: { effort: "medium", format: betaZodOutputFormat(SCHEMAS[tool]) },
-        messages: [{ role: "user", content: prompt }],
-      });
+      let response;
+      try {
+        response = await sdk.beta.messages.parse({
+          model: JUDGE_MODEL,
+          max_tokens: 16000,
+          betas: [FALLBACK_BETA],
+          fallbacks: "default",
+          system: system(sys),
+          output_config: { effort: "medium", format: betaZodOutputFormat(SCHEMAS[tool]) },
+          messages: [{ role: "user", content: prompt }],
+        });
+      } catch (e) {
+        // parse() throws a plain AnthropicError when the output isn't valid JSON (a refusal or a
+        // truncated reply). Return null so the engine retries or skips the ruling. API errors propagate.
+        if (e instanceof Anthropic.AnthropicError && !(e instanceof Anthropic.APIError)) return null;
+        throw e;
+      }
       report(JUDGE_MODEL, response.model, response.usage);
-      if (response.stop_reason === "refusal") return null;
+      if (response.stop_reason === "refusal" || response.stop_reason === "max_tokens") return null;
       return response.parsed_output ?? null;
     },
   };
