@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="260" viewBox="0 0 960 260" role="img" aria-label="Rubric: UNSUPPORTED −1, REPETITION −1, EVASION −1, FALLACY −2, CONTRADICTION −3, SUSTAINED −1">
+<g transform="translate(0 0)"><rect width="465" height="76" rx="14" fill="#0f1424" stroke="#f5c451" stroke-opacity="0.4"/>
+  <rect x="0" y="0" width="6" height="76" rx="3" fill="#f5c451"/>
+  <text x="24" y="32" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="700" fill="#fff">UNSUPPORTED</text>
+  <text x="24" y="56" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#9aa3ba">A claim with no reason, or a fact not in the case</text>
+  <text x="443" y="42" text-anchor="end" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="28" font-weight="800" fill="#f5c451">−1</text><rect x="367" y="50" width="12" height="6" rx="2" fill="#f5c451"/><rect x="383" y="50" width="12" height="6" rx="2" fill="#2a3146"/><rect x="399" y="50" width="12" height="6" rx="2" fill="#2a3146"/></g>
+<g transform="translate(495 0)"><rect width="465" height="76" rx="14" fill="#0f1424" stroke="#f5c451" stroke-opacity="0.4"/>
+  <rect x="0" y="0" width="6" height="76" rx="3" fill="#f5c451"/>
+  <text x="24" y="32" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="700" fill="#fff">REPETITION</text>
+  <text x="24" y="56" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#9aa3ba">Restating an earlier point, adding nothing</text>
+  <text x="443" y="42" text-anchor="end" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="28" font-weight="800" fill="#f5c451">−1</text><rect x="367" y="50" width="12" height="6" rx="2" fill="#f5c451"/><rect x="383" y="50" width="12" height="6" rx="2" fill="#2a3146"/><rect x="399" y="50" width="12" height="6" rx="2" fill="#2a3146"/></g>
+<g transform="translate(0 92)"><rect width="465" height="76" rx="14" fill="#0f1424" stroke="#f5c451" stroke-opacity="0.4"/>
+  <rect x="0" y="0" width="6" height="76" rx="3" fill="#f5c451"/>
+  <text x="24" y="32" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="700" fill="#fff">EVASION</text>
+  <text x="24" y="56" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#9aa3ba">Ignoring the opponent's previous point</text>
+  <text x="443" y="42" text-anchor="end" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="28" font-weight="800" fill="#f5c451">−1</text><rect x="367" y="50" width="12" height="6" rx="2" fill="#f5c451"/><rect x="383" y="50" width="12" height="6" rx="2" fill="#2a3146"/><rect x="399" y="50" width="12" height="6" rx="2" fill="#2a3146"/></g>
+<g transform="translate(495 92)"><rect width="465" height="76" rx="14" fill="#0f1424" stroke="#fb923c" stroke-opacity="0.4"/>
+  <rect x="0" y="0" width="6" height="76" rx="3" fill="#fb923c"/>
+  <text x="24" y="32" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="700" fill="#fff">FALLACY</text>
+  <text x="24" y="56" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#9aa3ba">A named logical fallacy, including a strawman</text>
+  <text x="443" y="42" text-anchor="end" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="28" font-weight="800" fill="#fb923c">−2</text><rect x="367" y="50" width="12" height="6" rx="2" fill="#fb923c"/><rect x="383" y="50" width="12" height="6" rx="2" fill="#fb923c"/><rect x="399" y="50" width="12" height="6" rx="2" fill="#2a3146"/></g>
+<g transform="translate(0 184)"><rect width="465" height="76" rx="14" fill="#0f1424" stroke="#ef4444" stroke-opacity="0.4"/>
+  <rect x="0" y="0" width="6" height="76" rx="3" fill="#ef4444"/>
+  <text x="24" y="32" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="700" fill="#fff">CONTRADICTION</text>
+  <text x="24" y="56" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#9aa3ba">Contradicting the case, itself, or a shared point</text>
+  <text x="443" y="42" text-anchor="end" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="28" font-weight="800" fill="#ef4444">−3</text><rect x="367" y="50" width="12" height="6" rx="2" fill="#ef4444"/><rect x="383" y="50" width="12" height="6" rx="2" fill="#ef4444"/><rect x="399" y="50" width="12" height="6" rx="2" fill="#ef4444"/></g>
+<g transform="translate(495 184)"><rect width="465" height="76" rx="14" fill="#0f1424" stroke="#f5c451" stroke-opacity="0.4"/>
+  <rect x="0" y="0" width="6" height="76" rx="3" fill="#f5c451"/>
+  <text x="24" y="32" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="700" fill="#fff">SUSTAINED</text>
+  <text x="24" y="56" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#9aa3ba">An objection against the turn was sustained</text>
+  <text x="443" y="42" text-anchor="end" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="28" font-weight="800" fill="#f5c451">−1</text><rect x="367" y="50" width="12" height="6" rx="2" fill="#f5c451"/><rect x="383" y="50" width="12" height="6" rx="2" fill="#2a3146"/><rect x="399" y="50" width="12" height="6" rx="2" fill="#2a3146"/></g>
+</svg>

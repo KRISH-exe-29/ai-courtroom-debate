@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="330" viewBox="0 0 960 330" role="img" aria-label="Features: adversarial lawyers, blind judge, quote-verified penalties, rubric scoring, any model, measured judge">
+<g transform="translate(0 0)">
+  <rect width="300" height="150" rx="16" fill="#0f1424" stroke="#60a5fa" stroke-opacity="0.45"/>
+  <rect width="300" height="4" rx="2" fill="#60a5fa"/>
+  <text x="22" y="52" font-size="30">⚔️</text>
+  <text x="70" y="50" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="21" font-weight="700" fill="#fff">Adversarial by design</text>
+  <text x="22" y="94" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">Two lawyers with opposite goals,</text>
+  <text x="22" y="118" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">10 turns, objections, knockouts.</text>
+</g>
+<g transform="translate(330 0)">
+  <rect width="300" height="150" rx="16" fill="#0f1424" stroke="#f5c451" stroke-opacity="0.45"/>
+  <rect width="300" height="4" rx="2" fill="#f5c451"/>
+  <text x="22" y="52" font-size="30">🙈</text>
+  <text x="70" y="50" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="21" font-weight="700" fill="#fff">Blind judge</text>
+  <text x="22" y="94" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">The judge sees Side A / Side B in a</text>
+  <text x="22" y="118" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">random order, never the names.</text>
+</g>
+<g transform="translate(660 0)">
+  <rect width="300" height="150" rx="16" fill="#0f1424" stroke="#f87171" stroke-opacity="0.45"/>
+  <rect width="300" height="4" rx="2" fill="#f87171"/>
+  <text x="22" y="52" font-size="30">🔎</text>
+  <text x="70" y="50" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="21" font-weight="700" fill="#fff">Quote-verified</text>
+  <text x="22" y="94" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">Every penalty quotes the turn.</text>
+  <text x="22" y="118" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">No match in the text, no penalty.</text>
+</g>
+<g transform="translate(0 180)">
+  <rect width="300" height="150" rx="16" fill="#0f1424" stroke="#a78bfa" stroke-opacity="0.45"/>
+  <rect width="300" height="4" rx="2" fill="#a78bfa"/>
+  <text x="22" y="52" font-size="30">📏</text>
+  <text x="70" y="50" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="21" font-weight="700" fill="#fff">Rubric, not vibes</text>
+  <text x="22" y="94" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">The judge names the offence;</text>
+  <text x="22" y="118" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">fixed rubric points do the scoring.</text>
+</g>
+<g transform="translate(330 180)">
+  <rect width="300" height="150" rx="16" fill="#0f1424" stroke="#22c55e" stroke-opacity="0.45"/>
+  <rect width="300" height="4" rx="2" fill="#22c55e"/>
+  <text x="22" y="52" font-size="30">🔌</text>
+  <text x="70" y="50" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="21" font-weight="700" fill="#fff">Any model</text>
+  <text x="22" y="94" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">Claude, Gemini, Ollama, Groq,</text>
+  <text x="22" y="118" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">or your Claude Code / Codex login.</text>
+</g>
+<g transform="translate(660 180)">
+  <rect width="300" height="150" rx="16" fill="#0f1424" stroke="#ec4899" stroke-opacity="0.45"/>
+  <rect width="300" height="4" rx="2" fill="#ec4899"/>
+  <text x="22" y="52" font-size="30">📊</text>
+  <text x="70" y="50" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="21" font-weight="700" fill="#fff">Measured judge</text>
+  <text x="22" y="94" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">Stability, bias, sycophancy and</text>
+  <text x="22" y="118" font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="15.5" fill="#aab2c8">fallacy benchmarks with targets.</text>
+</g>
+</svg>
