@@ -1,7 +1,38 @@
 {
-  "name": "courtroom-ai",
+  "name": "ai-courtroom-debate",
   "version": "0.1.0",
   "private": true,
+  "description": "AI courtroom: two AI lawyers debate your idea or decision, a blind AI judge scores every move with a rubric and delivers a verdict. Works with Claude, Gemini, Ollama or your coding agent.",
+  "keywords": [
+    "ai",
+    "llm",
+    "ai-debate",
+    "multi-agent",
+    "llm-as-a-judge",
+    "ai-judge",
+    "debate",
+    "decision-making",
+    "courtroom",
+    "claude",
+    "gemini",
+    "ollama",
+    "openai-compatible",
+    "evaluation",
+    "typescript"
+  ],
+  "homepage": "https://github.com/KRISH-exe-29/ai-courtroom-debate#readme",
+  "bugs": {
+    "url": "https://github.com/KRISH-exe-29/ai-courtroom-debate/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KRISH-exe-29/ai-courtroom-debate.git"
+  },
+  "license": "MIT",
+  "author": "KRISHNA RAJU S",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -31,8 +62,5 @@
     "tsx": "^4.23.15",
     "typescript": "^5",
     "vitest": "^5.1.0"
-  },
-  "description": "Two AI lawyers argue your decision; an AI judge scores every move and rules.",
-  "author": "KRISHNA RAJU S",
-  "license": "MIT"
+  }
 }
