@@ -159,7 +159,8 @@ public/trials/     recorded demo trials
 
 ### Model calls
 - Lawyers: `claude-sonnet-5-5`, streamed; objection via a trailing tool call.
-- Judge: `claude-opus-5-5`, forced tool use, zod-validated; one retry, then a skipped ruling.
+- Judge: `claude-opus-5-5`, structured outputs (JSON schema from zod; this model rejects forced tool use), validated again in the engine; one retry, then a skipped ruling.
+- Both models: server-side refusal fallback (`fallbacks: "default"`); thinking stays on (lawyers at low effort, judge at medium).
 - User text wrapped in `<case>` with `<` escaped; prompts state it is data, not instructions.
 - Prompt caching on system prompts + rubric. Token usage reported per call for cost tracking.
 
