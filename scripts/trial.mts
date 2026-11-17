@@ -4,7 +4,8 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { pathToFileURL } from "node:url";
 import { parseArgs, styleText } from "node:util";
-import { createAnthropicClient, usd, type Usage } from "../lib/engine/anthropic";
+import { usd, type Usage } from "../lib/engine/anthropic";
+import { resolveProvider } from "../lib/engine/providers";
 import { CaseError, validateCase } from "../lib/engine/case";
 import type { ModelClient } from "../lib/engine/client";
 import { START_HP } from "../lib/engine/rubric";
@@ -81,18 +82,23 @@ export async function runCli(argv: string[], makeClient: (onUsage: (u: Usage) =>
 
   const total = usage.reduce((s, u) => s + usd(u), 0);
   const tokens = usage.reduce((s, u) => s + u.input + u.output + u.cacheRead + u.cacheWrite, 0);
-  w(`\n${styleText("dim", `${usage.length} calls · ${tokens.toLocaleString()} tokens · $${total.toFixed(4)} · saved ${path}`)}\n`);
+  w(`\n${styleText("dim", `${usage.length} calls · ${tokens.toLocaleString()} tokens · ${Number.isFinite(total) ? `$${total.toFixed(4)}` : "cost n/a"} · saved ${path}`)}\n`);
   return { events, path, usd: total };
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
   if (existsSync(".env.local")) process.loadEnvFile(".env.local");
-  const key = process.env.ANTHROPIC_API_KEY;
   try {
     // The client is created after the case is validated, so input errors are reported first.
     await runCli(process.argv.slice(2), (onUsage) => {
-      if (!key) throw new CaseError("Set ANTHROPIC_API_KEY (environment or .env.local) to run a trial.");
-      return createAnthropicClient(key, { onUsage });
+      let provider;
+      try {
+        provider = resolveProvider(process.env);
+      } catch (e) {
+        throw new CaseError((e as Error).message);
+      }
+      console.log(styleText("dim", provider.label));
+      return provider.make(onUsage);
     });
   } catch (e) {
     if (!(e instanceof CaseError)) throw e;

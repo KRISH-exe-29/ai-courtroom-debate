@@ -25,6 +25,8 @@ export type Summary = {
   usdTotal: number;
   usdPerTrial: number;
   fallacy?: { recall: number; falsePositiveRate: number };
+  /** Which models produced the round, e.g. "lawyers x · judge y". */
+  models?: string;
 };
 
 const RULINGS: Ruling[] = ["FOR", "AGAINST", "CONDITIONAL"];

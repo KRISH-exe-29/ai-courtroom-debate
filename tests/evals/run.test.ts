@@ -1,6 +1,10 @@
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { expect, test } from "vitest";
 import { loadCases } from "@/evals/cases";
-import { planJobs, runEval, toRecord } from "@/evals/runner";
+import { buildReport, planJobs, runEval, toRecord } from "@/evals/runner";
+import { summarize } from "@/evals/metrics";
 import { fakeClient } from "../fake-client";
 
 const cases = loadCases();
@@ -42,4 +46,13 @@ test("toRecord counts kept and dropped penalties", () => {
   ], 0.5);
   expect(r).toMatchObject({ penaltiesKept: 1, penaltiesDropped: 2, verdict: "AGAINST", usd: 0.5 });
   expect(r.error).toBeUndefined();
+});
+
+test("report names the models that produced the round and shows unknown cost as n/a", () => {
+  const dir = mkdtempSync(join(tmpdir(), "report-"));
+  const summary = { ...summarize([]), usdTotal: NaN };
+  writeFileSync(join(dir, "2026-01-01.json"), JSON.stringify({ summary, models: "lawyers g · judge g" }));
+  const md = buildReport(dir, {});
+  expect(md).toContain("Models: lawyers g · judge g");
+  expect(md).toContain("total cost n/a");
 });

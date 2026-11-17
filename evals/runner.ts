@@ -67,12 +67,14 @@ export async function runEval(
 const latestJson = (dir: string, back = 0) => {
   if (!existsSync(dir)) return undefined;
   const name = readdirSync(dir).filter((f) => f.endsWith(".json")).sort().at(-1 - back);
-  return name ? JSON.parse(readFileSync(`${dir}/${name}`, "utf8")) : undefined;
+  // JSON has no NaN: metrics with nothing to compare are written as null, so read them back as NaN.
+  return name ? JSON.parse(readFileSync(`${dir}/${name}`, "utf8"), (_k, v) => (v === null ? NaN : v)) : undefined;
 };
 
 /** REPORT.md from the latest trial round (with the round before it for the change column) and the latest fallacy scores. */
 export function buildReport(dir = "evals/results", targets: Targets = {}): string {
-  const latest: Summary = latestJson(dir)?.summary ?? summarize([]);
+  const round = latestJson(dir);
+  const latest: Summary = { ...(round?.summary ?? summarize([])), models: round?.models };
   const prev: Summary | undefined = latestJson(dir, 1)?.summary;
   const fallacy = latestJson(`${dir}/fallacy`)?.scores;
   return renderReport(fallacy ? { ...latest, fallacy } : latest, prev, targets);
