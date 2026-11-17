@@ -18,6 +18,48 @@ const judge = styleText(["bold", "yellow"], "ARBITER");
 
 const bar = (hp: number) => "█".repeat(hp) + "░".repeat(START_HP - hp);
 
+/** Prints one trial event; `hp` is updated as points change. */
+export function renderEvent(e: TrialEvent, hp: Record<Lawyer, number>, w: (s: string) => void) {
+  switch (e.type) {
+    case "filed":
+      w(`\n${styleText("bold", "CASE:")} ${e.case.idea}\n${label(e.first)} opens.\n`);
+      break;
+    case "turn_start":
+      w(`\n${label(e.lawyer)} ${styleText("dim", `[${e.turn}] ${e.phase}`)}\n`);
+      break;
+    case "speech_delta":
+      w(e.text);
+      break;
+    case "turn_end":
+      w("\n");
+      break;
+    case "objection":
+      w(`${styleText(["bold", "magenta"], "OBJECTION!")} ${e.ground} «${e.quote}»\n`);
+      break;
+    case "ruling":
+      if (e.objection) w(`${judge} ${styleText("bold", e.objection)}\n`);
+      if (e.skipped) w(`${judge} ${styleText("dim", "no ruling (invalid judge output)")}\n`);
+      for (const p of e.penalties) w(`${judge} −${p.points} ${p.code}: ${p.reason}  ${styleText("dim", `«${p.quote}»`)}\n`);
+      if (e.dropped) w(styleText("dim", `  (${e.dropped} penalty dropped: quote not found)\n`));
+      break;
+    case "hp_change":
+      hp[e.lawyer] = e.hp;
+      w(`  ${label("AEGIS")} ${bar(hp.AEGIS)} ${hp.AEGIS} | ${label("NEMESIS")} ${bar(hp.NEMESIS)} ${hp.NEMESIS}\n`);
+      break;
+    case "knockout":
+      w(`\n${styleText(["bold", "red"], "KNOCKOUT:")} ${label(e.lawyer)} has no points left.\n`);
+      break;
+    case "verdict":
+      w(`\n${judge} ${styleText("bold", `VERDICT: ${e.ruling}`)} (confidence ${e.confidence})\n${e.summary}\n`);
+      for (const cond of e.conditions) w(`  - ${cond}\n`);
+      w(styleText("dim", `Turning point: turn [${e.turningPoint}]\n`));
+      break;
+    case "error":
+      w(`\n${styleText(["bold", "red"], "ERROR:")} ${e.message}\n`);
+      break;
+  }
+}
+
 export async function runCli(argv: string[], makeClient: (onUsage: (u: Usage) => void) => ModelClient, out = process.stdout) {
   const { values, positionals } = parseArgs({
     args: argv,
@@ -36,44 +78,7 @@ export async function runCli(argv: string[], makeClient: (onUsage: (u: Usage) =>
 
   for await (const e of runTrial(c, client, { first: values.first as Lawyer | undefined })) {
     events.push(e);
-    switch (e.type) {
-      case "filed":
-        w(`\n${styleText("bold", "CASE:")} ${e.case.idea}\n${label(e.first)} opens.\n`);
-        break;
-      case "turn_start":
-        w(`\n${label(e.lawyer)} ${styleText("dim", `[${e.turn}] ${e.phase}`)}\n`);
-        break;
-      case "speech_delta":
-        w(e.text);
-        break;
-      case "turn_end":
-        w("\n");
-        break;
-      case "objection":
-        w(`${styleText(["bold", "magenta"], "OBJECTION!")} ${e.ground} «${e.quote}»\n`);
-        break;
-      case "ruling":
-        if (e.objection) w(`${judge} ${styleText("bold", e.objection)}\n`);
-        if (e.skipped) w(`${judge} ${styleText("dim", "no ruling (invalid judge output)")}\n`);
-        for (const p of e.penalties) w(`${judge} −${p.points} ${p.code}: ${p.reason}  ${styleText("dim", `«${p.quote}»`)}\n`);
-        if (e.dropped) w(styleText("dim", `  (${e.dropped} penalty dropped: quote not found)\n`));
-        break;
-      case "hp_change":
-        hp[e.lawyer] = e.hp;
-        w(`  ${label("AEGIS")} ${bar(hp.AEGIS)} ${hp.AEGIS} | ${label("NEMESIS")} ${bar(hp.NEMESIS)} ${hp.NEMESIS}\n`);
-        break;
-      case "knockout":
-        w(`\n${styleText(["bold", "red"], "KNOCKOUT:")} ${label(e.lawyer)} has no points left.\n`);
-        break;
-      case "verdict":
-        w(`\n${judge} ${styleText("bold", `VERDICT: ${e.ruling}`)} (confidence ${e.confidence})\n${e.summary}\n`);
-        for (const cond of e.conditions) w(`  - ${cond}\n`);
-        w(styleText("dim", `Turning point: turn [${e.turningPoint}]\n`));
-        break;
-      case "error":
-        w(`\n${styleText(["bold", "red"], "ERROR:")} ${e.message}\n`);
-        break;
-    }
+    renderEvent(e, hp, w);
   }
 
   const path = values.out ?? `trials-out/${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
