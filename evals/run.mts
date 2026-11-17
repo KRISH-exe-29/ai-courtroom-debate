@@ -2,7 +2,7 @@
 // Usage: npm run eval -- [--concurrency 4] [--limit N]   (--limit keeps the first N base cases and their variants)
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { parseArgs } from "node:util";
-import { resolveProvider } from "../lib/engine/providers";
+import { resolveLocalProvider } from "../lib/node/agent-cli";
 import { loadCases } from "./cases";
 import { summarize } from "./metrics";
 import type { Targets } from "./report";
@@ -11,7 +11,7 @@ import { buildReport, planJobs, runEval } from "./runner";
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 let provider;
 try {
-  provider = resolveProvider(process.env);
+  provider = resolveLocalProvider(process.env);
 } catch (e) {
   console.error((e as Error).message);
   process.exit(1);
