@@ -5,8 +5,8 @@ import { parseArgs } from "node:util";
 import { createAnthropicClient } from "../lib/engine/anthropic";
 import { loadCases } from "./cases";
 import { summarize } from "./metrics";
-import { renderReport, type Targets } from "./report";
-import { planJobs, previousSummary, runEval } from "./runner";
+import type { Targets } from "./report";
+import { buildReport, planJobs, runEval } from "./runner";
 
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 const key = process.env.ANTHROPIC_API_KEY;
@@ -18,7 +18,6 @@ const { values } = parseArgs({ options: { concurrency: { type: "string" }, limit
 const jobs = planJobs(loadCases(), values.limit ? Number(values.limit) : undefined);
 console.log(`Running ${jobs.length} trials…`);
 
-const prev = previousSummary();
 const results = await runEval(jobs, (onUsage) => createAnthropicClient(key, { onUsage }), {
   concurrency: values.concurrency ? Number(values.concurrency) : 4,
   onDone: (d, t, r) => console.log(`[${d}/${t}] ${r.caseId} (${r.first} first) → ${r.verdict ?? r.error} $${r.usd.toFixed(4)}`),
@@ -30,5 +29,5 @@ const stamp = new Date().toISOString().replace(/[:.]/g, "-");
 mkdirSync("evals/results", { recursive: true });
 writeFileSync(`evals/results/${stamp}.json`, JSON.stringify({ summary, records, logs: results.map((r) => r.events) }, null, 2) + "\n");
 const targets: Targets = JSON.parse(readFileSync("evals/targets.json", "utf8"));
-writeFileSync("evals/REPORT.md", renderReport(summary, prev, targets));
+writeFileSync("evals/REPORT.md", buildReport("evals/results", targets));
 console.log(`\nSaved evals/results/${stamp}.json and evals/REPORT.md · total $${summary.usdTotal.toFixed(2)}`);

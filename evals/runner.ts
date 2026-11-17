@@ -4,7 +4,8 @@ import type { ModelClient } from "../lib/engine/client";
 import { runTrial } from "../lib/engine/trial";
 import type { EventOf, Lawyer, TrialEvent } from "../lib/engine/types";
 import type { EvalCase } from "./cases";
-import type { Summary, TrialRecord } from "./metrics";
+import { summarize, type Summary, type TrialRecord } from "./metrics";
+import { renderReport, type Targets } from "./report";
 
 export type Job = { case: EvalCase; first: Lawyer; seed: number };
 
@@ -63,9 +64,16 @@ export async function runEval(
   return results;
 }
 
-/** Summary from the most recent earlier results file, for the report's change column. */
-export function previousSummary(dir = "evals/results"): Summary | undefined {
+const latestJson = (dir: string, back = 0) => {
   if (!existsSync(dir)) return undefined;
-  const latest = readdirSync(dir).filter((f) => f.endsWith(".json")).sort().at(-1);
-  return latest ? JSON.parse(readFileSync(`${dir}/${latest}`, "utf8")).summary : undefined;
+  const name = readdirSync(dir).filter((f) => f.endsWith(".json")).sort().at(-1 - back);
+  return name ? JSON.parse(readFileSync(`${dir}/${name}`, "utf8")) : undefined;
+};
+
+/** REPORT.md from the latest trial round (with the round before it for the change column) and the latest fallacy scores. */
+export function buildReport(dir = "evals/results", targets: Targets = {}): string {
+  const latest: Summary = latestJson(dir)?.summary ?? summarize([]);
+  const prev: Summary | undefined = latestJson(dir, 1)?.summary;
+  const fallacy = latestJson(`${dir}/fallacy`)?.scores;
+  return renderReport(fallacy ? { ...latest, fallacy } : latest, prev, targets);
 }
