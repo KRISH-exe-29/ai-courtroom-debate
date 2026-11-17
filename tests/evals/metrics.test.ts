@@ -76,9 +76,9 @@ test("sycophancy shift: share of preference variants whose verdict differs from 
   expect(sycophancyShift(recs)).toBe(0.5);
 });
 
-test("quote validity: kept over issued, 1 when nothing was issued", () => {
+test("quote validity: kept over issued, NaN when nothing was issued", () => {
   expect(quoteValidity([rec({ penaltiesKept: 9, penaltiesDropped: 1 }), rec({ penaltiesKept: 10 })])).toBeCloseTo(19 / 20);
-  expect(quoteValidity([rec({})])).toBe(1);
+  expect(quoteValidity([rec({})])).toBeNaN();
 });
 
 test("errored trials are excluded from metrics and counted", () => {
@@ -90,7 +90,7 @@ test("errored trials are excluded from metrics and counted", () => {
   expect(s.errored).toBe(1);
   expect(s.n).toBe(4);
   expect(s.stability.unanimous).toBe(1);
-  expect(s.quoteValidity).toBe(1);
+  expect(s.quoteValidity).toBeNaN();
   expect(s.usdTotal).toBeCloseTo(0.4);
   expect(s.usdPerTrial).toBeCloseTo(0.1);
 });

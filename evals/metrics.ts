@@ -101,7 +101,7 @@ export function quoteValidity(recs: TrialRecord[]): number {
   const valid = recs.filter((r) => !r.error);
   const kept = valid.reduce((s, r) => s + r.penaltiesKept, 0);
   const issued = kept + valid.reduce((s, r) => s + r.penaltiesDropped, 0);
-  return issued === 0 ? 1 : kept / issued;
+  return share(kept, issued);
 }
 
 export function summarize(recs: TrialRecord[]): Summary {
