@@ -1,0 +1,33 @@
+name: Bug report
+description: Something broke, or a trial behaved wrongly
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: Command
+      placeholder: npm run trial -- "Should I learn Rust?"
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Provider
+      options: [Claude API, Gemini API, OpenAI-compatible (Ollama, Groq, OpenRouter...), Claude Code, Codex, Step-by-step (npm run court)]
+    validations:
+      required: true
+  - type: textarea
+    id: trial
+    attributes:
+      label: Trial log
+      description: For a wrong ruling or penalty, attach the JSON file from trials-out/. Remove anything private first.
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: Windows 11, Node 24.16, v0.1.0
