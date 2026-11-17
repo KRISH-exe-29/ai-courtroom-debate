@@ -4,9 +4,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { parseArgs } from "node:util";
 import { createAnthropicClient, usd } from "../lib/engine/anthropic";
-import { judgeSystem, judgeTranscript, rulingRequest } from "../lib/engine/prompts";
-import { RulingInput } from "../lib/engine/schema";
-import { fallacyScores, isFlagged, parseCsv, sampleItems, type FallacyItem } from "./fallacy-data";
+import { fallacyScores, judgeItem, parseCsv, sampleItems } from "./fallacy-data";
 import type { Targets } from "./report";
 import { buildReport } from "./runner";
 
@@ -39,18 +37,6 @@ const items = sampleItems(await dataset("logic"), await dataset("argq"), n, seed
 
 let cost = 0;
 const client = createAnthropicClient(key, { onUsage: (u) => (cost += usd(u)) });
-const system = judgeSystem();
-const c = { idea: "Judge the argument made in the opening statement.", context: "" };
-
-async function judgeItem(item: FallacyItem) {
-  const prompt = `${judgeTranscript(c, [{ lawyer: "AEGIS", phase: "opening", text: item.text }], "AEGIS")}\n\n${rulingRequest(0)}`;
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const parsed = RulingInput.safeParse(await client.callJudge({ system, prompt, tool: "ruling" }));
-    if (parsed.success) return { ...item, flagged: isFlagged(item.text, parsed.data) };
-  }
-  return { ...item, flagged: false, invalid: true };
-}
-
 console.log(`Judging ${items.length} items…`);
 const results: Awaited<ReturnType<typeof judgeItem>>[] = new Array(items.length);
 let next = 0;
@@ -59,18 +45,19 @@ await Promise.all(
   Array.from({ length: Number(values.concurrency ?? 4) }, async () => {
     while (next < items.length) {
       const i = next++;
-      results[i] = await judgeItem(items[i]);
+      results[i] = await judgeItem(client, items[i]);
       if (++done % 10 === 0) console.log(`[${done}/${items.length}] $${cost.toFixed(4)}`);
     }
   }),
 );
 
-const scores = fallacyScores(results);
+// Items the judge could not rule on are excluded from the scores and counted as `invalid`.
+const scores = fallacyScores(results.filter((r) => !r.invalid));
 const stamp = new Date().toISOString().replace(/[:.]/g, "-");
 mkdirSync("evals/results/fallacy", { recursive: true });
 writeFileSync(
   `evals/results/fallacy/${stamp}.json`,
-  JSON.stringify({ scores, n, seed, usd: cost, invalid: results.filter((r) => "invalid" in r).length, items: results }, null, 2) + "\n",
+  JSON.stringify({ scores, n, seed, usd: cost, invalid: results.filter((r) => r.invalid).length, items: results }, null, 2) + "\n",
 );
 const targets: Targets = JSON.parse(readFileSync("evals/targets.json", "utf8"));
 writeFileSync("evals/REPORT.md", buildReport("evals/results", targets));

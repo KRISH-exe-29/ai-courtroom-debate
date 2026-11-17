@@ -63,3 +63,19 @@ test("buildReport combines the latest trial round, the previous one and the late
   expect(md).toMatch(/Stability.*0\.0%.*−100\.0 pts.*FAIL/);
   expect(md).toMatch(/Fallacy recall.*90\.0%.*PASS/);
 });
+
+test("judgeItem survives client errors and invalid output, marking the item invalid", async () => {
+  const { judgeItem } = await import("@/evals/fallacy-data");
+  const item = { label: "fallacy" as const, text: "You are wrong because you are stupid.", source: "t" };
+  const throwing = { streamLawyer: async function* () {}, callJudge: async () => { throw new Error("429"); } };
+  await expect(judgeItem(throwing, item)).resolves.toMatchObject({ flagged: false, invalid: true });
+  const junk = { streamLawyer: async function* () {}, callJudge: async () => "junk" };
+  await expect(judgeItem(junk, item)).resolves.toMatchObject({ invalid: true });
+  const good = {
+    streamLawyer: async function* () {},
+    callJudge: async () => ({ penalties: [{ code: "FALLACY", reason: "ad hominem", quote: "because you are stupid" }] }),
+  };
+  const r = await judgeItem(good, item);
+  expect(r).toMatchObject({ flagged: true });
+  expect("invalid" in r).toBe(false);
+});

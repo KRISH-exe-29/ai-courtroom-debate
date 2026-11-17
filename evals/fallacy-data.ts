@@ -1,4 +1,6 @@
-import type { RulingInput } from "../lib/engine/schema";
+import type { ModelClient } from "../lib/engine/client";
+import { judgeSystem, judgeTranscript, rulingRequest } from "../lib/engine/prompts";
+import { RulingInput } from "../lib/engine/schema";
 import { quoteMatches } from "../lib/engine/score";
 
 export type FallacyItem = { label: "fallacy" | "clean"; text: string; source: string };
@@ -69,4 +71,20 @@ export function fallacyScores(results: { label: FallacyItem["label"]; flagged: b
     return xs.length ? xs.filter((r) => r.flagged).length / xs.length : NaN;
   };
   return { recall: rate("fallacy"), falsePositiveRate: rate("clean") };
+}
+
+const BENCH_CASE = { idea: "Judge the argument made in the opening statement.", context: "" };
+
+/** One judge call per item (one retry). Errors and invalid output mark the item invalid instead of aborting the run. */
+export async function judgeItem(client: ModelClient, item: FallacyItem): Promise<FallacyItem & { flagged: boolean; invalid?: true }> {
+  const prompt = `${judgeTranscript(BENCH_CASE, [{ lawyer: "AEGIS", phase: "opening", text: item.text }], "AEGIS")}\n\n${rulingRequest(0)}`;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const parsed = RulingInput.safeParse(await client.callJudge({ system: judgeSystem(), prompt, tool: "ruling" }));
+      if (parsed.success) return { ...item, flagged: isFlagged(item.text, parsed.data) };
+    } catch {
+      // counted as invalid below
+    }
+  }
+  return { ...item, flagged: false, invalid: true };
 }
