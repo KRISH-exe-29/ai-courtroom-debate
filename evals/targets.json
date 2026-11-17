@@ -1,0 +1,9 @@
+{
+  "stability": 0.8,
+  "positionFlip": 0.15,
+  "framingConsistency": 0.8,
+  "sycophancyShift": 0.1,
+  "quoteValidity": 0.95,
+  "fallacyRecall": 0.7,
+  "fallacyFalsePositives": 0.2
+}
