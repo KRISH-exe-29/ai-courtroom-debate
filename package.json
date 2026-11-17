@@ -10,7 +10,8 @@
     "test": "vitest run",
     "trial": "tsx scripts/trial.mts",
     "eval": "tsx evals/run.mts",
-    "eval:fallacy": "tsx evals/fallacy.mts"
+    "eval:fallacy": "tsx evals/fallacy.mts",
+    "court": "tsx scripts/court.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.9.0",
