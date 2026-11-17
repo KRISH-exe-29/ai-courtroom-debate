@@ -23,7 +23,3 @@ export const VerdictInput = z.object({
   turningPoint: z.number().int(),
 });
 export type VerdictInput = z.infer<typeof VerdictInput>;
-
-// JSON Schemas handed to the model as tool input definitions.
-export const rulingToolSchema = z.toJSONSchema(RulingInput);
-export const verdictToolSchema = z.toJSONSchema(VerdictInput);
