@@ -6,7 +6,7 @@ export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta
 export const GEMINI_DEFAULT_MODEL = "gemini-4-hydrogen";
 
 export type ProviderConfig = {
-  provider: "anthropic" | "openai-compatible";
+  provider: "anthropic" | "openai-compatible" | "agent-cli";
   baseUrl?: string;
   apiKey?: string;
   lawyerModel: string;

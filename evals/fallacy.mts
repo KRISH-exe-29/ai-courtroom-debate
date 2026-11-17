@@ -4,7 +4,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { parseArgs } from "node:util";
 import { usd } from "../lib/engine/anthropic";
-import { resolveProvider } from "../lib/engine/providers";
+import { resolveLocalProvider } from "../lib/node/agent-cli";
 import { fallacyScores, judgeItem, parseCsv, sampleItems } from "./fallacy-data";
 import type { Targets } from "./report";
 import { buildReport } from "./runner";
@@ -28,7 +28,7 @@ async function dataset(name: keyof typeof SOURCES) {
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 let provider;
 try {
-  provider = resolveProvider(process.env);
+  provider = resolveLocalProvider(process.env);
 } catch (e) {
   console.error((e as Error).message);
   process.exit(1);

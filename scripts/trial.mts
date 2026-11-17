@@ -5,7 +5,7 @@ import { dirname } from "node:path";
 import { pathToFileURL } from "node:url";
 import { parseArgs, styleText } from "node:util";
 import { usd, type Usage } from "../lib/engine/anthropic";
-import { resolveProvider } from "../lib/engine/providers";
+import { resolveLocalProvider } from "../lib/node/agent-cli";
 import { CaseError, validateCase } from "../lib/engine/case";
 import type { ModelClient } from "../lib/engine/client";
 import { START_HP } from "../lib/engine/rubric";
@@ -93,7 +93,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
     await runCli(process.argv.slice(2), (onUsage) => {
       let provider;
       try {
-        provider = resolveProvider(process.env);
+        provider = resolveLocalProvider(process.env);
       } catch (e) {
         throw new CaseError((e as Error).message);
       }
