@@ -8,9 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "trial": "tsx scripts/trial.ts",
-    "eval": "tsx evals/run.ts",
-    "eval:fallacy": "tsx evals/fallacy.ts"
+    "trial": "tsx scripts/trial.mts",
+    "eval": "tsx evals/run.mts",
+    "eval:fallacy": "tsx evals/fallacy.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.9.0",
