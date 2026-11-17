@@ -4,7 +4,7 @@ import type { ModelClient } from "../lib/engine/client";
 import { runTrial } from "../lib/engine/trial";
 import type { EventOf, Lawyer, TrialEvent } from "../lib/engine/types";
 import type { EvalCase } from "./cases";
-import { summarize, type Summary, type TrialRecord } from "./metrics";
+import { SEEDS, summarize, type Summary, type TrialRecord } from "./metrics";
 import { renderReport, type Targets } from "./report";
 
 export type Job = { case: EvalCase; first: Lawyer; seed: number };
@@ -15,7 +15,7 @@ export function planJobs(cases: EvalCase[], limit?: number): Job[] {
   const kept = new Set(base.map((c) => c.id));
   const variants = cases.filter((c) => c.variant !== "base" && kept.has(c.of!));
   return [
-    ...base.flatMap((c) => [0, 1, 2].map((seed) => ({ case: c, first: "AEGIS" as const, seed }))),
+    ...base.flatMap((c) => Array.from({ length: SEEDS }, (_, seed) => seed).map((seed) => ({ case: c, first: "AEGIS" as const, seed }))),
     ...base.map((c) => ({ case: c, first: "NEMESIS" as const, seed: 0 })),
     ...variants.map((c) => ({ case: c, first: "AEGIS" as const, seed: 0 })),
   ];

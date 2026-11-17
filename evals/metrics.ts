@@ -57,16 +57,16 @@ export function fleissKappa(rows: number[][]): number {
   return pe === 1 ? 1 : (pBar - pe) / (1 - pe);
 }
 
+/** Normal-order runs per base case in an eval round. */
+export const SEEDS = 3;
+
 export function stability(recs: TrialRecord[]): { unanimous: number; fleissKappa: number } {
-  const groups = [...baseRuns(recs).values()].filter((g) => g.length >= 2);
+  // Only cases with every run complete: two agreeing verdicts is an easier bar than three.
+  const groups = [...baseRuns(recs).values()].filter((g) => g.length === SEEDS);
   const unanimous = share(groups.filter((g) => g.every((v) => v === g[0])).length, groups.length);
-  // Fleiss needs equal raters per subject: use the groups with the most common size.
-  const size = modeOf(groups.map((g) => g.length));
-  const rows = groups.filter((g) => g.length === size).map((g) => RULINGS.map((r) => g.filter((v) => v === r).length));
+  const rows = groups.map((g) => RULINGS.map((r) => g.filter((v) => v === r).length));
   return { unanimous, fleissKappa: fleissKappa(rows) };
 }
-
-const modeOf = (xs: number[]) => xs.sort((a, b) => xs.filter((v) => v === b).length - xs.filter((v) => v === a).length)[0];
 
 /** Compares each variant run with the modal verdict of its base case. */
 function againstBase(recs: TrialRecord[], pick: (r: TrialRecord) => string | undefined, same: (v: Ruling, base: Ruling) => boolean) {

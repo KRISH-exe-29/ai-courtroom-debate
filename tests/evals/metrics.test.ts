@@ -107,3 +107,14 @@ test("report marks a failing target and shows the change from the previous repor
   expect(md).toMatch(/Stability.*50\.0%.*≥ 80\.0%.*−50\.0 pts.*FAIL/);
   expect(md).toMatch(/Position flip.*n\/a/);
 });
+
+test("stability only counts cases where all three normal runs produced a verdict", () => {
+  const recs = [
+    ...seeds("a", ["FOR", "FOR", "FOR"]),
+    rec({ caseId: "b", seed: 0, verdict: "FOR" }),
+    rec({ caseId: "b", seed: 1, verdict: "FOR" }),
+    rec({ caseId: "b", seed: 2, verdict: undefined, error: "timeout" }),
+    ...seeds("c", ["FOR", "AGAINST", "FOR"]),
+  ];
+  expect(stability(recs).unanimous).toBe(0.5); // a and c count; b has only two verdicts
+});
