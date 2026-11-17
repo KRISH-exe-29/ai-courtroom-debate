@@ -9,7 +9,7 @@ git clone https://github.com/KRISH-exe-29/ai-courtroom-debate.git
 cd ai-courtroom-debate
 npm install
 npm test          # 107 tests, no network or API key needed
-npx tsc --noEmit  # type check
+npx next typegen && npx tsc --noEmit  # type check
 ```
 
 To run a real trial, configure a provider (see [`.env.example`](.env.example)) or have Claude Code or Codex installed, then run
