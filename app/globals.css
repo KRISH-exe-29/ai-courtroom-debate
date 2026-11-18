@@ -919,3 +919,55 @@ textarea {
 .ghost-button:hover {
   border-color: var(--gold);
 }
+
+/* ---------- 3D courtroom ---------- */
+.top-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.view-toggle {
+  display: none;
+  cursor: pointer;
+}
+
+.view-toggle[aria-pressed="true"] {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Phones get the 2D court: the 3D one wants a bigger screen and a stronger GPU. */
+@media (min-width: 760px) {
+  .view-toggle {
+    display: inline-block;
+  }
+}
+
+.top-note {
+  margin: 0 auto 8px;
+  width: min(720px, calc(100% - 32px));
+}
+
+.stage3d {
+  position: sticky;
+  top: 116px;
+  z-index: 5;
+  height: min(46vh, 480px);
+  margin: 4px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--rail);
+  border-radius: 18px;
+  background: var(--night);
+  /* a band of page colour hides the transcript as it scrolls up behind the stage */
+  box-shadow: 0 0 0 16px var(--night), 0 30px 40px #000a;
+}
+
+.stage-loading {
+  display: grid;
+  place-content: center;
+  height: 100%;
+  color: var(--muted);
+  font-family: var(--display);
+  font-size: 1.2rem;
+}
