@@ -39,7 +39,7 @@ textarea {
 .court {
   max-width: 980px;
   margin: 0 auto;
-  padding: 0 16px 120px;
+  padding: 0 16px 200px;
 }
 
 .topbar {
@@ -756,5 +756,130 @@ textarea {
 }
 
 .feed-end {
-  scroll-margin-bottom: 110px;
+  scroll-margin-bottom: 170px;
+}
+
+/* ---------- saved trials ---------- */
+.open-file {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rail);
+}
+
+.open-file .error {
+  flex-basis: 100%;
+}
+
+.file-button {
+  padding: 8px 18px;
+  border: 1px solid var(--rail);
+  border-radius: 999px;
+  font-family: var(--display);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.file-button:hover {
+  border-color: var(--gold);
+}
+
+.file-button:focus-within {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.file-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.control-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.control-row > button:not(.primary) {
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.control-row > button:not(.primary):hover {
+  background: #ffffff14;
+}
+
+/* ---------- rewind bar ---------- */
+.controls.has-timeline {
+  flex-direction: column;
+  align-items: stretch;
+  width: min(720px, calc(100% - 32px));
+  padding: 12px 16px 10px;
+  border-radius: 18px;
+}
+
+.controls.has-timeline .control-row {
+  justify-content: flex-end;
+}
+
+.timeline {
+  position: relative;
+  padding-top: 6px;
+}
+
+.timeline input[type="range"] {
+  width: 100%;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+.markers {
+  position: relative;
+  min-height: 14px;
+  margin: 2px 8px 0;
+}
+
+.marker {
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  cursor: pointer;
+}
+
+.marker-penalty,
+.key-penalty::before { background: var(--nemesis); }
+.marker-objection,
+.key-objection::before { background: #ff7ab8; }
+.marker-turning,
+.key-turning::before { background: var(--paper); }
+.marker-verdict,
+.key-verdict::before { background: var(--gold); }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.key::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 1px;
+  transform: rotate(45deg) translateY(-2px);
 }
