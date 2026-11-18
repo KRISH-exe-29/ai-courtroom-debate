@@ -7,7 +7,7 @@ import { createAnthropicClient } from "@/lib/engine/anthropic";
 import { CaseError, MAX_CONTEXT, MAX_IDEA, validateCase } from "@/lib/engine/case";
 import { createOpenAICompatibleClient } from "@/lib/engine/openai-compatible";
 import { GEMINI_BASE_URL, GEMINI_DEFAULT_MODEL } from "@/lib/engine/providers";
-import { reduceEvents, type CourtState } from "@/lib/engine/reduce";
+import { initialState, reduceEvents, type CourtState } from "@/lib/engine/reduce";
 import { GROUNDS, RUBRIC, START_HP } from "@/lib/engine/rubric";
 import { runTrial } from "@/lib/engine/trial";
 import type { EventOf, Lawyer, Phase, TrialEvent } from "@/lib/engine/types";
@@ -30,6 +30,9 @@ const RULING: Record<"FOR" | "AGAINST" | "CONDITIONAL", { word: string; line: st
 const SPEEDS = [1, 2, 4];
 
 // three.js is large, so the 3D courtroom only downloads when someone switches to it.
+/** The court before anyone has spoken: the landing page poster. */
+const EMPTY_COURT = initialState();
+
 const Courtroom3D = dynamic(() => import("./courtroom-3d"), {
   ssr: false,
   loading: () => <div className="stage-loading">Building the courtroom…</div>,
@@ -259,8 +262,7 @@ export function Courtroom() {
           }}
         >
           <div className="hero-art" aria-hidden>
-            {/* eslint-disable-next-line @next/next/no-img-element -- a decorative still, sized by CSS */}
-            <img src="/court-hero.jpg" alt="" />
+            <Stage2D state={EMPTY_COURT} hits={[]} />
           </div>
           <div className="hero-copy">
             <p className="versus" aria-label="AEGIS versus NEMESIS">

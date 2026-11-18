@@ -18,7 +18,16 @@ const C = {
   nemesis: "#ff5a5a",
   gold: "#f2c14e",
   paper: "#e9ecf5",
+  navy: "#1b2552",
+  under: "#161a33",
+  aegisHead: "#d7e8ff",
+  nemesisHead: "#f6d3dc",
+  stone: "#cfc6b4",
 };
+
+/** Gold trim, shared by every figure and the room. */
+const gold = () => <meshStandardMaterial color={C.gold} metalness={0.7} roughness={0.3} flatShading />;
+const flat = (color: string) => <meshStandardMaterial color={color} flatShading roughness={0.65} />;
 
 /** When each reaction last fired, in seconds on the performance clock. */
 type Cues = { hit: Record<Lawyer, number>; objection: number; verdict: number };
@@ -84,21 +93,39 @@ function Room() {
       {/* aisle carpet */}
       <mesh rotation-x={-Math.PI / 2} position={[0, 0.005, 1.5]}>
         <planeGeometry args={[1.6, 9]} />
-        <meshStandardMaterial color="#2a1830" roughness={1} />
+        <meshStandardMaterial color="#3a1830" roughness={1} />
       </mesh>
+      {[-0.82, 0.82].map((x) => (
+        <mesh key={x} rotation-x={-Math.PI / 2} position={[x, 0.007, 1.5]}>
+          <planeGeometry args={[0.05, 9]} />
+          <meshStandardMaterial color={C.gold} emissive={C.gold} emissiveIntensity={0.4} />
+        </mesh>
+      ))}
       <mesh position={[0, 4, -5.5]}>
         <planeGeometry args={[30, 8]} />
         <meshStandardMaterial color={C.wall} roughness={0.9} />
       </mesh>
       {[-5, -3.2, 3.2, 5].map((x) => (
-        <mesh key={x} position={[x, 2.5, -5.2]} castShadow>
-          <cylinderGeometry args={[0.32, 0.38, 5, 8]} />
-          <meshStandardMaterial color={C.wood} flatShading roughness={0.7} />
-        </mesh>
+        <group key={x} position={[x, 2.5, -5.2]}>
+          <mesh castShadow>
+            <cylinderGeometry args={[0.32, 0.38, 5, 8]} />
+            {flat("#151c3a")}
+          </mesh>
+          {[-2.35, 1.9].map((y) => (
+            <mesh key={y} position={[0, y, 0]}>
+              <cylinderGeometry args={[0.44, 0.44, 0.16, 8]} />
+              {gold()}
+            </mesh>
+          ))}
+        </group>
       ))}
       {/* the court's seal: a glowing gold ring on the back wall */}
       <mesh position={[0, 3.75, -5.45]}>
         <torusGeometry args={[0.9, 0.06, 6, 40]} />
+        <meshStandardMaterial color={C.gold} emissive={C.gold} emissiveIntensity={2.2} toneMapped={false} />
+      </mesh>
+      <mesh position={[0, 3.75, -5.45]}>
+        <torusGeometry args={[0.68, 0.045, 6, 40]} />
         <meshStandardMaterial color={C.gold} emissive={C.gold} emissiveIntensity={2.2} toneMapped={false} />
       </mesh>
       <mesh position={[0, 3.75, -5.47]}>
@@ -142,6 +169,18 @@ function Bench({ tilt, cues, verdict, reduced }: { tilt: number; cues: React.Ref
         <boxGeometry args={[3.6, 1.3, 0.7]} />
         <meshStandardMaterial color="#2d3860" roughness={0.6} />
       </mesh>
+      {[-1.15, 0, 1.15].map((x) => (
+        <group key={x} position={[x, 1.12, 0.91]}>
+          <mesh>
+            <boxGeometry args={[0.98, 0.9, 0.02]} />
+            {gold()}
+          </mesh>
+          <mesh position={[0, 0, 0.012]}>
+            <boxGeometry args={[0.86, 0.78, 0.02]} />
+            {flat("#1a2246")}
+          </mesh>
+        </group>
+      ))}
       <mesh position={[0, 1.83, 0.55]}>
         <boxGeometry args={[3.8, 0.08, 0.85]} />
         <meshStandardMaterial color={C.gold} metalness={0.6} roughness={0.35} />
@@ -151,16 +190,28 @@ function Bench({ tilt, cues, verdict, reduced }: { tilt: number; cues: React.Ref
       <group position={[0, 0.5, -0.25]}>
         <mesh position={[0, 1.15, 0]} castShadow>
           <cylinderGeometry args={[0.42, 0.7, 1.9, 7]} />
-          <meshStandardMaterial color={C.robe} flatShading roughness={0.9} />
+          <meshStandardMaterial color={C.navy} flatShading roughness={0.9} />
         </mesh>
-        <mesh position={[0, 2.38, 0]} castShadow>
-          <icosahedronGeometry args={[0.36, 0]} />
-          <meshStandardMaterial color="#c9b8a3" flatShading roughness={0.8} />
+        <mesh position={[0, 2.12, 0]} rotation-x={Math.PI / 2}>
+          <torusGeometry args={[0.3, 0.06, 4, 10]} />
+          {gold()}
         </mesh>
-        <mesh position={[0, 2.43, 0]} rotation-x={Math.PI / 2}>
-          <torusGeometry args={[0.36, 0.075, 4, 14]} />
-          <meshStandardMaterial color={C.gold} emissive={C.gold} emissiveIntensity={0.6} flatShading />
+        {[-0.13, 0.13].map((x) => (
+          <mesh key={x} position={[x, 1.5, 0.5]} rotation-x={-0.18}>
+            <boxGeometry args={[0.06, 1, 0.03]} />
+            {gold()}
+          </mesh>
+        ))}
+        <mesh position={[0, 2.42, 0]} scale={[0.92, 1.22, 0.95]} castShadow>
+          <icosahedronGeometry args={[0.33, 1]} />
+          <meshStandardMaterial color={C.stone} flatShading roughness={0.8} />
         </mesh>
+        {[-0.2, 0.2].map((tilt) => (
+          <mesh key={tilt} position={[0, 2.5, 0]} rotation={[Math.PI / 2, tilt, 0]}>
+            <torusGeometry args={[0.32, 0.04, 4, 16]} />
+            <meshStandardMaterial color={C.gold} emissive={C.gold} emissiveIntensity={2.4} toneMapped={false} />
+          </mesh>
+        ))}
       </group>
 
       {/* the scales, tilting toward whoever is ahead */}
@@ -207,6 +258,15 @@ function Bench({ tilt, cues, verdict, reduced }: { tilt: number; cues: React.Ref
 
 const SPARKS = 14;
 
+/**
+ * One armour material per lawyer, shared by every plate of the suit so a hit flashes all of it.
+ * Module-level because the frame loop changes its glow, and only one courtroom is ever mounted.
+ */
+const ARMOUR: Record<Lawyer, THREE.MeshStandardMaterial> = {
+  AEGIS: new THREE.MeshStandardMaterial({ color: "#4f8ff0", emissive: C.aegis, emissiveIntensity: 0.2, flatShading: true, roughness: 0.55 }),
+  NEMESIS: new THREE.MeshStandardMaterial({ color: "#d0485a", emissive: C.nemesis, emissiveIntensity: 0.2, flatShading: true, roughness: 0.55 }),
+};
+
 function Figure({
   who,
   x,
@@ -226,7 +286,7 @@ function Figure({
 }) {
   const color = who === "AEGIS" ? C.aegis : C.nemesis;
   const body = useRef<THREE.Group>(null);
-  const skin = useRef<THREE.MeshStandardMaterial>(null);
+  const armour = ARMOUR[who];
   const spot = useRef<THREE.SpotLight>(null);
   const shaft = useRef<THREE.MeshBasicMaterial>(null);
   const target = useMemo(() => new THREE.Object3D(), []);
@@ -244,7 +304,7 @@ function Figure({
   const facing = who === "AEGIS" ? 0.45 : -0.45;
 
   useFrame((state, delta) => {
-    if (!body.current || !skin.current || !spot.current || !sparks.current) return;
+    if (!body.current || !spot.current || !sparks.current) return;
     const k = reduced ? 1 : 1 - Math.exp(-delta * 5);
     const t = state.clock.elapsedTime;
     const hit = since(cues.current.hit[who]);
@@ -256,7 +316,7 @@ function Figure({
     const shake = hit < 0.45 && !reduced ? Math.sin(hit * 70) * 0.09 * (1 - hit / 0.45) : 0;
     body.current.position.set(shake, bob, 0);
 
-    skin.current.emissiveIntensity = 0.35 + (speaking ? 0.5 : 0) + (hit < 0.6 ? 3 * (1 - hit / 0.6) : 0);
+    ARMOUR[who].emissiveIntensity = 0.2 + (speaking ? 0.35 : 0) + (hit < 0.6 ? 3 * (1 - hit / 0.6) : 0);
     spot.current.intensity += ((speaking ? 90 : 10) - spot.current.intensity) * k;
     if (shaft.current) shaft.current.opacity += ((speaking ? 0.2 : 0.035) - shaft.current.opacity) * k;
 
@@ -290,6 +350,10 @@ function Figure({
         <boxGeometry args={[1.5, 1.1, 0.6]} />
         <meshStandardMaterial color={C.wood} roughness={0.7} />
       </mesh>
+      <mesh position={[0, 1.12, 0.75]}>
+        <boxGeometry args={[1.56, 0.05, 0.66]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.9} />
+      </mesh>
       {Array.from({ length: 10 }, (_, i) => {
         const on = i < hp;
         return (
@@ -305,48 +369,7 @@ function Figure({
         );
       })}
 
-      <group ref={body}>
-        {who === "AEGIS" ? (
-          <>
-            <mesh position={[0, 0.95, 0]} castShadow>
-              <cylinderGeometry args={[0.32, 0.5, 1.9, 6]} />
-              <meshStandardMaterial ref={skin} color={color} emissive={color} emissiveIntensity={0.35} flatShading roughness={0.5} />
-            </mesh>
-            <mesh position={[0, 2.2, 0]} castShadow>
-              <icosahedronGeometry args={[0.3, 0]} />
-              <meshStandardMaterial color="#dfe6ff" flatShading />
-            </mesh>
-            {/* shield */}
-            <group position={[0.55, 1.25, 0.25]} rotation-y={-0.4}>
-              <mesh rotation-x={Math.PI / 2} castShadow>
-                <cylinderGeometry args={[0.42, 0.42, 0.08, 6]} />
-                <meshStandardMaterial color="#20335e" metalness={0.5} roughness={0.4} flatShading />
-              </mesh>
-              <mesh position={[0, 0, 0.05]}>
-                <torusGeometry args={[0.36, 0.035, 4, 6]} />
-                <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1.6} toneMapped={false} />
-              </mesh>
-            </group>
-          </>
-        ) : (
-          <>
-            <mesh position={[0, 0.95, 0]} castShadow>
-              <cylinderGeometry args={[0.46, 0.24, 1.9, 4]} />
-              <meshStandardMaterial ref={skin} color={color} emissive={color} emissiveIntensity={0.35} flatShading roughness={0.5} />
-            </mesh>
-            <mesh position={[0, 2.22, 0]} castShadow>
-              <octahedronGeometry args={[0.32, 0]} />
-              <meshStandardMaterial color="#ffd9d9" flatShading />
-            </mesh>
-            {([-1, 1] as const).map((s) => (
-              <mesh key={s} position={[0.5 * s, 1.85, 0]} rotation-z={-0.6 * s}>
-                <tetrahedronGeometry args={[0.2, 0]} />
-                <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1.4} flatShading toneMapped={false} />
-              </mesh>
-            ))}
-          </>
-        )}
-      </group>
+      <group ref={body}>{who === "AEGIS" ? <AegisBody armour={armour} /> : <NemesisBody armour={armour} />}</group>
 
       <instancedMesh ref={sparks} args={[undefined, undefined, SPARKS]} frustumCulled={false}>
         <tetrahedronGeometry args={[1, 0]} />
@@ -460,4 +483,147 @@ function Rig({
     }
   });
   return null;
+}
+
+/** The heater shield outline, point down. */
+function shieldShape(scale = 1) {
+  const s = new THREE.Shape();
+  const pts: [number, number][] = [
+    [0, 0.55],
+    [0.38, 0.44],
+    [0.35, -0.08],
+    [0, -0.6],
+    [-0.35, -0.08],
+    [-0.38, 0.44],
+  ];
+  pts.forEach(([x, y], i) => (i ? s.lineTo(x * scale, y * scale) : s.moveTo(x * scale, y * scale)));
+  s.closePath();
+  return s;
+}
+
+/** AEGIS: an armoured knight with a crystal head, a long navy coat and a glowing heater shield. */
+function AegisBody({ armour }: { armour: THREE.Material }) {
+  const face = useMemo(() => shieldShape(), []);
+  const rim = useMemo(() => shieldShape(1.1), []);
+  return (
+    <>
+      {[-0.17, 0.17].map((x) => (
+        <mesh key={x} position={[x, 0.5, 0]} castShadow>
+          <cylinderGeometry args={[0.13, 0.11, 1, 6]} />
+          {flat(C.navy)}
+        </mesh>
+      ))}
+      <mesh position={[0, 0.72, -0.02]} castShadow>
+        <cylinderGeometry args={[0.36, 0.52, 0.85, 7]} />
+        {flat(C.navy)}
+      </mesh>
+      <mesh position={[0, 1.42, 0]} material={armour} castShadow>
+        <cylinderGeometry args={[0.42, 0.3, 0.85, 6]} />
+      </mesh>
+      <mesh position={[0, 1.02, 0]} rotation-x={Math.PI / 2}>
+        <torusGeometry args={[0.33, 0.035, 4, 12]} />
+        {gold()}
+      </mesh>
+      <mesh position={[0, 1.86, 0]} rotation-x={Math.PI / 2}>
+        <torusGeometry args={[0.2, 0.035, 4, 10]} />
+        {gold()}
+      </mesh>
+      {[-1, 1].map((s) => (
+        <group key={s}>
+          <mesh position={[0.46 * s, 1.78, 0]} scale={[1.15, 0.8, 1]} castShadow>
+            <dodecahedronGeometry args={[0.21, 0]} />
+            {flat(C.navy)}
+          </mesh>
+          <mesh position={[0.5 * s, 1.35, 0]} rotation-z={0.08 * s} material={armour} castShadow>
+            <cylinderGeometry args={[0.1, 0.08, 0.72, 6]} />
+          </mesh>
+        </group>
+      ))}
+      <mesh position={[0, 2.16, 0]} castShadow>
+        <icosahedronGeometry args={[0.27, 0]} />
+        {flat(C.aegisHead)}
+      </mesh>
+      <group position={[0.62, 1.22, 0.22]} rotation-y={-0.35}>
+        <mesh castShadow>
+          <extrudeGeometry args={[face, { depth: 0.06, bevelEnabled: false }]} />
+          {flat("#18224a")}
+        </mesh>
+        <mesh position={[0, 0, -0.012]}>
+          <extrudeGeometry args={[rim, { depth: 0.05, bevelEnabled: false }]} />
+          <meshStandardMaterial color={C.aegis} emissive={C.aegis} emissiveIntensity={2.2} toneMapped={false} />
+        </mesh>
+      </group>
+    </>
+  );
+}
+
+/** NEMESIS: a red-armoured brute with glowing shoulder spikes, pointing across the court. */
+function NemesisBody({ armour }: { armour: THREE.Material }) {
+  return (
+    <>
+      {[-1, 1].map((s) => (
+        <group key={s}>
+          <mesh position={[0.3 * s, 0.5, 0]} rotation-z={0.22 * s} castShadow>
+            <cylinderGeometry args={[0.16, 0.12, 1.05, 6]} />
+            {flat(C.under)}
+          </mesh>
+          <mesh position={[0.36 * s, 0.38, 0.08]} rotation-z={0.22 * s} material={armour} castShadow>
+            <boxGeometry args={[0.26, 0.5, 0.22]} />
+          </mesh>
+        </group>
+      ))}
+      <mesh position={[0, 1.15, 0]} castShadow>
+        <cylinderGeometry args={[0.32, 0.36, 0.45, 6]} />
+        {flat(C.under)}
+      </mesh>
+      <mesh position={[0, 0.98, 0]} rotation-x={Math.PI / 2}>
+        <torusGeometry args={[0.36, 0.04, 4, 12]} />
+        {gold()}
+      </mesh>
+      <mesh position={[0, 1.62, 0]} scale={[1.25, 0.82, 0.85]} material={armour} castShadow>
+        <dodecahedronGeometry args={[0.5, 0]} />
+      </mesh>
+      {[-1, 1].map((s) => (
+        <group key={s}>
+          <mesh position={[0.64 * s, 1.84, 0]} material={armour} castShadow>
+            <dodecahedronGeometry args={[0.26, 0]} />
+          </mesh>
+          <mesh position={[0.68 * s, 2.25, -0.02]}>
+            <coneGeometry args={[0.07, 0.55, 5]} />
+            <meshStandardMaterial color={C.nemesis} emissive={C.nemesis} emissiveIntensity={2.4} toneMapped={false} />
+          </mesh>
+        </group>
+      ))}
+      <mesh position={[0, 2.22, 0.02]} scale={[1, 1.3, 1]} castShadow>
+        <octahedronGeometry args={[0.27, 0]} />
+        {flat(C.nemesisHead)}
+      </mesh>
+      {/* the accusing arm, swung forward toward AEGIS */}
+      <group position={[-0.66, 1.7, 0.05]} rotation-y={0.6}>
+        <mesh position={[-0.32, 0, 0]} rotation-z={Math.PI / 2} castShadow>
+          <cylinderGeometry args={[0.1, 0.1, 0.6, 6]} />
+          {flat(C.under)}
+        </mesh>
+        <mesh position={[-0.62, 0, 0]} rotation-z={Math.PI / 2} material={armour} castShadow>
+          <cylinderGeometry args={[0.14, 0.12, 0.32, 6]} />
+        </mesh>
+        <mesh position={[-0.86, 0, 0]} material={armour}>
+          <dodecahedronGeometry args={[0.12, 0]} />
+        </mesh>
+        <mesh position={[-1.04, 0.02, 0]} rotation-z={Math.PI / 2}>
+          <coneGeometry args={[0.04, 0.24, 5]} />
+          {flat("#d0485a")}
+        </mesh>
+      </group>
+      <group position={[0.7, 1.3, 0]} rotation-z={0.12}>
+        <mesh castShadow>
+          <cylinderGeometry args={[0.11, 0.1, 0.6, 6]} />
+          {flat(C.under)}
+        </mesh>
+        <mesh position={[0, -0.32, 0]} material={armour} castShadow>
+          <dodecahedronGeometry args={[0.15, 0]} />
+        </mesh>
+      </group>
+    </>
+  );
 }
