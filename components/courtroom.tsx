@@ -7,13 +7,14 @@ import { createAnthropicClient } from "@/lib/engine/anthropic";
 import { CaseError, MAX_CONTEXT, MAX_IDEA, validateCase } from "@/lib/engine/case";
 import { createOpenAICompatibleClient } from "@/lib/engine/openai-compatible";
 import { GEMINI_BASE_URL, GEMINI_DEFAULT_MODEL } from "@/lib/engine/providers";
-import { reduceEvents, type CourtState } from "@/lib/engine/reduce";
+import { initialState, reduceEvents, type CourtState } from "@/lib/engine/reduce";
 import { GROUNDS, RUBRIC, START_HP } from "@/lib/engine/rubric";
 import { runTrial } from "@/lib/engine/trial";
 import type { EventOf, Lawyer, Phase, TrialEvent } from "@/lib/engine/types";
 import { playbackSteps, timelineMarkers, unblind } from "@/lib/web/playback";
 import { MAX_FILE_BYTES, parseTrialFile, toTrialFile, TrialFileError, trialFileName } from "@/lib/web/trial-file";
 import { cardData, drawVerdictCard } from "@/lib/web/verdict-card";
+import { Stage2D } from "./stage-2d";
 
 const RECORDED = [
   { id: "startup", title: "Should I quit my job to build a startup?", note: "8 months of savings and a working prototype" },
@@ -29,6 +30,9 @@ const RULING: Record<"FOR" | "AGAINST" | "CONDITIONAL", { word: string; line: st
 const SPEEDS = [1, 2, 4];
 
 // three.js is large, so the 3D courtroom only downloads when someone switches to it.
+/** The court before anyone has spoken: the landing page poster. */
+const EMPTY_COURT = initialState();
+
 const Courtroom3D = dynamic(() => import("./courtroom-3d"), {
   ssr: false,
   loading: () => <div className="stage-loading">Building the courtroom…</div>,
@@ -70,6 +74,14 @@ function explainError(message: string) {
   return `The trial stopped: ${message}`;
 }
 
+/** The end of the speech so far, as broadcast subtitles: about two lines, cut at a word. */
+function subtitle(text: string, max = 190) {
+  const t = text.trim();
+  if (t.length <= max) return t;
+  const tail = t.slice(-max);
+  return `…${tail.slice(tail.indexOf(" ") + 1)}`;
+}
+
 const titleCase = (s: string) => s.charAt(0) + s.slice(1).toLowerCase().replace(/_/g, " ");
 
 export function Courtroom() {
@@ -82,6 +94,8 @@ export function Courtroom() {
   const [pops, setPops] = useState<Pop[]>([]);
   const [tab, setTab] = useState<"recorded" | "live">("recorded");
   const [view3d, setView3d] = useState(false);
+  const [drawer, setDrawer] = useState(false);
+  const [verdictHidden, setVerdictHidden] = useState(false);
   const [noWebGL, setNoWebGL] = useState(false);
   /** How many events the rewind bar shows; undefined means all of them. */
   const [pos, setPos] = useState<number>();
@@ -134,6 +148,9 @@ export function Courtroom() {
     setPaused(false);
     setPos(undefined);
     setFileError("");
+    setDrawer(false);
+    setVerdictHidden(false);
+    if (next.kind !== "idle") setView3d(window.matchMedia("(min-width: 760px)").matches && hasWebGL());
     sourceLog.current = [];
     setMode(next);
   }
@@ -217,39 +234,113 @@ export function Courtroom() {
   const diff = state.hp.AEGIS - state.hp.NEMESIS;
   const tilt = Math.max(-14, Math.min(14, diff * -2.5));
   const knockedOut = state.knockout;
+  const reducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const live = mode.kind === "live";
+  const finished = !running && events.length > 0;
+  const speaking = state.current !== undefined && !state.verdict ? state.turns[state.current] : undefined;
 
-  return (
-    <div className="court">
-      <header className="topbar">
-        <Link href="/" className="brand" onClick={() => reset({ kind: "idle" })}>
-          <ScalesIcon />
-          <span>Courtroom AI</span>
-        </Link>
-        <div className="top-actions">
-          {mode.kind !== "idle" && (
-            <button
-              className="ghost view-toggle"
-              aria-pressed={view3d}
-              onClick={() => {
-                if (!view3d && !hasWebGL()) return setNoWebGL(true);
-                setView3d((v) => !v);
-              }}
-            >
-              {view3d ? "2D view" : "3D view"}
-            </button>
-          )}
+  if (mode.kind === "idle") {
+    return (
+      <div className="landing">
+        <header className="topbar">
+          <Link href="/" className="brand" onClick={() => reset({ kind: "idle" })}>
+            <ScalesIcon />
+            <span>Courtroom AI</span>
+          </Link>
           <a className="ghost" href="https://github.com/KRISH-exe-29/ai-courtroom-debate">
             Source on GitHub
           </a>
-        </div>
-      </header>
-      {noWebGL && (
-        <p className="error top-note" role="alert">
-          This browser can&rsquo;t show 3D graphics (WebGL is off or unsupported), so the court stays in 2D.
-        </p>
-      )}
+        </header>
 
-      <section className="hud" aria-label="Scoreboard">
+        <section
+          className="hero"
+          onPointerMove={(e) => {
+            if (reducedMotion) return;
+            const r = e.currentTarget.getBoundingClientRect();
+            e.currentTarget.style.setProperty("--px", String((e.clientX - r.left) / r.width - 0.5));
+            e.currentTarget.style.setProperty("--py", String((e.clientY - r.top) / r.height - 0.5));
+          }}
+        >
+          <div className="hero-art" aria-hidden>
+            <Stage2D state={EMPTY_COURT} hits={[]} />
+          </div>
+          <div className="hero-copy">
+            <p className="versus" aria-label="AEGIS versus NEMESIS">
+              <span className="v-aegis">Aegis</span>
+              <span className="v-vs" aria-hidden>
+                vs
+              </span>
+              <span className="v-nemesis">Nemesis</span>
+            </p>
+            <h1>
+              Put your idea
+              <br />
+              on trial.
+            </h1>
+            <p className="lede">
+              Two AI lawyers argue over your idea or decision. A judge who never learns their names docks points for every bluff,
+              dodge and contradiction, then hands down a ruling with conditions.
+            </p>
+          </div>
+        </section>
+
+        <section className="intro" id="start">
+          <div className="tabs" role="tablist" aria-label="Choose how to start">
+            <button role="tab" aria-selected={tab === "recorded"} onClick={() => setTab("recorded")}>
+              Watch a recorded trial
+            </button>
+            <button role="tab" aria-selected={tab === "live"} onClick={() => setTab("live")}>
+              Run your own trial
+            </button>
+          </div>
+          {tab === "recorded" ? (
+            <ul className="cases">
+              {RECORDED.map((r) => (
+                <li key={r.id}>
+                  <button onClick={() => playRecorded(r.id)}>
+                    <span className="case-title">{r.title}</span>
+                    <span className="case-note">{r.note}</span>
+                    <span className="case-go">Watch the trial</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <LiveForm onStart={runLive} />
+          )}
+          <div className="open-file">
+            <label className="file-button">
+              <input
+                type="file"
+                accept=".json,application/json"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = "";
+                  if (file) openFile(file);
+                }}
+              />
+              Open a saved trial
+            </label>
+            <span className="hint">Replays a trial file saved from this site or the terminal courtroom.</span>
+            {fileError && (
+              <p className="error" role="alert">
+                {fileError}
+              </p>
+            )}
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`broadcast${drawer ? " drawer-open" : ""}`}>
+      <div className="stage-layer">
+        {view3d ? <Courtroom3D state={state} reduced={reducedMotion} /> : <Stage2D state={state} hits={pops.map((p) => p.lawyer)} />}
+      </div>
+      <div className="stage-shade" aria-hidden />
+
+      <header className="bug" aria-label="Scoreboard">
         <Fighter lawyer="AEGIS" role="Defence" hp={state.hp.AEGIS} pops={pops} out={knockedOut === "AEGIS"} />
         <div className="judge" aria-label={`Scales tilt ${diff === 0 ? "level" : diff > 0 ? "toward AEGIS" : "toward NEMESIS"}`}>
           <svg viewBox="-60 -60 120 110" className="scales" aria-hidden>
@@ -265,7 +356,12 @@ export function Courtroom() {
           <span className="judge-name">Arbiter</span>
         </div>
         <Fighter lawyer="NEMESIS" role="Prosecution" hp={state.hp.NEMESIS} pops={pops} out={knockedOut === "NEMESIS"} />
-      </section>
+      </header>
+
+      <div className="onair">
+        <span className={`badge${live && running ? " badge-live" : ""}`}>{live ? (running ? "Live" : "Live trial") : mode.kind === "file" ? "Saved trial" : "Replay"}</span>
+        <span className="onair-case">{state.case?.idea ?? "Filing the case…"}</span>
+      </div>
 
       {flash && (
         <div key={flash.key} className={`stamp stamp-${flash.tone}`} role="status" onAnimationEnd={() => setFlash(undefined)}>
@@ -274,179 +370,204 @@ export function Courtroom() {
         </div>
       )}
 
-      {view3d && mode.kind !== "idle" && (
-        <section className="stage3d" aria-label="3D courtroom (the transcript below has the same content)">
-          <Courtroom3D state={state} reduced={typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches} />
+      {speaking && state.current !== undefined && (
+        <div key={state.current} className={`lower-third lt-${speaking.lawyer.toLowerCase()}`}>
+          <p className="lt-plate">
+            <b>{speaking.lawyer}</b>
+            <span>
+              {PHASE[speaking.phase]}, {turnLabel(state.current).toLowerCase()}
+            </span>
+          </p>
+          <p className="lt-sub">{subtitle(speaking.text) || " "}</p>
+        </div>
+      )}
+
+      {state.error && (
+        <p className="error onair-error" role="alert">
+          {explainError(state.error)}
+        </p>
+      )}
+
+      {state.verdict && !verdictHidden && !drawer && (
+        <section className={`reveal reveal-${state.verdict.ruling.toLowerCase()}`} aria-label="Verdict">
+          <p className="reveal-label">The Arbiter rules</p>
+          <p className="reveal-word">{RULING[state.verdict.ruling].word}</p>
+          <p className="reveal-line">
+            {RULING[state.verdict.ruling].line} Confidence {state.verdict.confidence}%.
+          </p>
+          <p className="reveal-summary">{unblind(state.verdict.summary, state.first)}</p>
+          {state.verdict.conditions.length > 0 && (
+            <ul className="conditions">
+              {state.verdict.conditions.map((c) => (
+                <li key={c}>{unblind(c, state.first)}</li>
+              ))}
+            </ul>
+          )}
+          <div className="reveal-actions">
+            {finished && (
+              <button
+                className="primary"
+                onClick={() => {
+                  setDrawer(true);
+                  setTimeout(() => document.getElementById("verdict-card")?.scrollIntoView({ block: "start" }), 50);
+                }}
+              >
+                Share the verdict
+              </button>
+            )}
+            <button
+              className="ghost-button"
+              onClick={() => {
+                setDrawer(true);
+                setTimeout(() => document.getElementById("full-verdict")?.scrollIntoView({ block: "start" }), 50);
+              }}
+            >
+              Read the full ruling
+            </button>
+            <button className="ghost-button" onClick={() => setVerdictHidden(true)}>
+              Back to the courtroom
+            </button>
+          </div>
         </section>
       )}
 
-      <main className="main">
-        {mode.kind === "idle" ? (
-          <section className="intro">
-            <h1>Put your idea on trial.</h1>
-            <p className="lede">
-              Two AI lawyers argue over your idea or decision. A judge who never learns their names docks points for every bluff,
-              dodge and contradiction, then gives a ruling with conditions.
-            </p>
-            <div className="tabs" role="tablist" aria-label="Choose how to start">
-              <button role="tab" aria-selected={tab === "recorded"} onClick={() => setTab("recorded")}>
-                Watch a recorded trial
-              </button>
-              <button role="tab" aria-selected={tab === "live"} onClick={() => setTab("live")}>
-                Run your own trial
-              </button>
+      <nav className="deck" aria-label="Trial controls">
+        {!live && running && (
+          <div className="deck-play">
+            <button onClick={() => setPaused((p) => !p)}>{paused ? "Resume" : "Pause"}</button>
+            <div className="speeds" role="group" aria-label="Playback speed">
+              {SPEEDS.map((s) => (
+                <button key={s} aria-pressed={speed === s} onClick={() => setSpeed(s)}>
+                  {s}×
+                </button>
+              ))}
             </div>
-            {tab === "recorded" ? (
-              <ul className="cases">
-                {RECORDED.map((r) => (
-                  <li key={r.id}>
-                    <button onClick={() => playRecorded(r.id)}>
-                      <span className="case-title">{r.title}</span>
-                      <span className="case-note">{r.note}</span>
-                      <span className="case-go">Watch the trial</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <LiveForm onStart={runLive} />
-            )}
-            <div className="open-file">
-              <label className="file-button">
-                <input
-                  type="file"
-                  accept=".json,application/json"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    e.target.value = "";
-                    if (file) openFile(file);
-                  }}
-                />
-                Open a saved trial
-              </label>
-              <span className="hint">Replays a trial file saved from this site or the terminal courtroom.</span>
-              {fileError && (
-                <p className="error" role="alert">
-                  {fileError}
-                </p>
-              )}
-            </div>
-          </section>
-        ) : (
-          <section className="record" aria-live="polite">
-            <div className="docket">
-              <div>
-                <p className="docket-label">{DOCKET[mode.kind]}</p>
-                <h1 className="docket-case">{state.case?.idea ?? "Filing the case…"}</h1>
-                {state.case?.context && <p className="docket-context">{state.case.context}</p>}
-              </div>
-            </div>
-
-            <ol className="turns">
-              {state.turns.map((t, i) => {
-                const objection = state.objections.find((o) => o.turn === i);
-                const verdictOnObjection = rulings.find((r) => r.turn === i)?.objection;
-                const isCurrent = running && state.current === i && !rulings.some((r) => r.turn === i);
-                return (
-                  <li key={i} className={`turn turn-${t.lawyer.toLowerCase()}`} aria-current={isCurrent ? "step" : undefined}>
-                    <p className="turn-head">
-                      <span className="turn-who">{t.lawyer}</span>
-                      <span className="turn-phase">
-                        {PHASE[t.phase]}, {turnLabel(i).toLowerCase()}
-                      </span>
-                    </p>
-                    <p className="speech">
-                      {t.text}
-                      {isCurrent && <span className="caret" aria-hidden />}
-                    </p>
-                    {objection && (
-                      <p className="objection">
-                        <b>{objection.by} objects: {titleCase(objection.ground)}.</b> {GROUNDS[objection.ground]}{" "}
-                        <q>{objection.quote}</q>
-                        {verdictOnObjection && <em className={`obj-${verdictOnObjection.toLowerCase()}`}> {titleCase(verdictOnObjection)}.</em>}
-                      </p>
-                    )}
-                    {t.penalties.map((p, j) => (
-                      <div key={j} className="penalty">
-                        <span className="penalty-pts">−{p.points}</span>
-                        <div>
-                          <p className="penalty-code">{RUBRIC[p.code].label}</p>
-                          <p className="penalty-reason">{unblind(p.reason, state.first)}</p>
-                          {p.quote && <q className="penalty-quote">{unblind(p.quote, state.first)}</q>}
-                        </div>
-                      </div>
-                    ))}
-                  </li>
-                );
-              })}
-            </ol>
-
-            {knockedOut && <p className="knockout">Knockout. {knockedOut} has no points left.</p>}
-
-            {state.verdict && (
-              <section className="verdict" aria-label="Verdict">
-                <p className="verdict-label">Arbiter&rsquo;s ruling</p>
-                <p className="verdict-word">{RULING[state.verdict.ruling].word}</p>
-                <p className="verdict-line">
-                  {RULING[state.verdict.ruling].line} Confidence {state.verdict.confidence}%.
-                </p>
-                <p className="verdict-summary">{unblind(state.verdict.summary, state.first)}</p>
-                {state.verdict.conditions.length > 0 && (
-                  <ul className="conditions">
-                    {state.verdict.conditions.map((c) => (
-                      <li key={c}>{unblind(c, state.first)}</li>
-                    ))}
-                  </ul>
-                )}
-                <p className="turning">Turning point: {turnLabel(state.verdict.turningPoint).toLowerCase()}.</p>
-              </section>
-            )}
-
-            {state.verdict && !running && <VerdictCard state={state} />}
-
-            {state.error && (
-              <p className="error" role="alert">
-                {explainError(state.error)}
-              </p>
-            )}
-            <div ref={feedEnd} className="feed-end" />
-          </section>
-        )}
-      </main>
-
-      {mode.kind !== "idle" && (
-        <nav className={`controls${!running && events.length > 0 ? " has-timeline" : ""}`} aria-label="Trial controls">
-          {!running && events.length > 0 && (
-            <Timeline
-              length={events.length}
-              value={pos ?? events.length}
-              markers={markers}
-              turn={state.current}
-              onChange={(v) => setPos(v >= events.length ? undefined : v)}
-            />
-          )}
-          {mode.kind !== "live" && running && (
-            <>
-              <button onClick={() => setPaused((p) => !p)}>{paused ? "Resume" : "Pause"}</button>
-              <div className="speeds" role="group" aria-label="Playback speed">
-                {SPEEDS.map((s) => (
-                  <button key={s} aria-pressed={speed === s} onClick={() => setSpeed(s)}>
-                    {s}×
-                  </button>
-                ))}
-              </div>
-              <button onClick={() => (skipRef.current = true)}>Skip to verdict</button>
-            </>
-          )}
-          {mode.kind === "live" && running && <button onClick={stop}>Stop trial</button>}
-          <div className="control-row">
-            {!running && events.length > 0 && <button onClick={saveTrial}>Save trial</button>}
-            <button className="primary" onClick={() => reset({ kind: "idle" })}>
-              New trial
-            </button>
+            <button onClick={() => (skipRef.current = true)}>Skip to verdict</button>
           </div>
-        </nav>
-      )}
+        )}
+        {live && running && (
+          <div className="deck-play">
+            <button onClick={stop}>Stop trial</button>
+          </div>
+        )}
+        {finished && (
+          <Timeline
+            length={events.length}
+            value={pos ?? events.length}
+            markers={markers}
+            turn={state.current}
+            onChange={(v) => setPos(v >= events.length ? undefined : v)}
+          />
+        )}
+        <div className="deck-tools">
+          <button aria-pressed={drawer} onClick={() => setDrawer((d) => !d)}>
+            Transcript
+          </button>
+          <button
+            className="view-toggle"
+            aria-pressed={view3d}
+            onClick={() => {
+              if (!view3d && !hasWebGL()) return setNoWebGL(true);
+              setView3d((v) => !v);
+            }}
+          >
+            {view3d ? "2D" : "3D"}
+          </button>
+          {finished && <button onClick={saveTrial}>Save trial</button>}
+          <button className="primary" onClick={() => reset({ kind: "idle" })}>
+            New trial
+          </button>
+        </div>
+        {noWebGL && (
+          <p className="error deck-note" role="alert">
+            This browser can&rsquo;t show 3D graphics (WebGL is off or unsupported), so the court stays in 2D.
+          </p>
+        )}
+      </nav>
+
+      <aside className="drawer" aria-label="Transcript" hidden={!drawer}>
+        <div className="drawer-head">
+          <p className="docket-label">{DOCKET[mode.kind]}</p>
+          <button className="ghost-button" onClick={() => setDrawer(false)}>
+            Close
+          </button>
+        </div>
+        <section className="record" aria-live="polite">
+          <h1 className="docket-case">{state.case?.idea ?? "Filing the case…"}</h1>
+          {state.case?.context && <p className="docket-context">{state.case.context}</p>}
+
+          <ol className="turns">
+            {state.turns.map((t, i) => {
+              const objection = state.objections.find((o) => o.turn === i);
+              const verdictOnObjection = rulings.find((r) => r.turn === i)?.objection;
+              const isCurrent = running && state.current === i && !rulings.some((r) => r.turn === i);
+              return (
+                <li key={i} className={`turn turn-${t.lawyer.toLowerCase()}`} aria-current={isCurrent ? "step" : undefined}>
+                  <p className="turn-head">
+                    <span className="turn-who">{t.lawyer}</span>
+                    <span className="turn-phase">
+                      {PHASE[t.phase]}, {turnLabel(i).toLowerCase()}
+                    </span>
+                  </p>
+                  <p className="speech">
+                    {t.text}
+                    {isCurrent && <span className="caret" aria-hidden />}
+                  </p>
+                  {objection && (
+                    <p className="objection">
+                      <b>
+                        {objection.by} objects: {titleCase(objection.ground)}.
+                      </b>{" "}
+                      {GROUNDS[objection.ground]} <q>{objection.quote}</q>
+                      {verdictOnObjection && <em className={`obj-${verdictOnObjection.toLowerCase()}`}> {titleCase(verdictOnObjection)}.</em>}
+                    </p>
+                  )}
+                  {t.penalties.map((p, j) => (
+                    <div key={j} className="penalty">
+                      <span className="penalty-pts">−{p.points}</span>
+                      <div>
+                        <p className="penalty-code">{RUBRIC[p.code].label}</p>
+                        <p className="penalty-reason">{unblind(p.reason, state.first)}</p>
+                        {p.quote && <q className="penalty-quote">{unblind(p.quote, state.first)}</q>}
+                      </div>
+                    </div>
+                  ))}
+                </li>
+              );
+            })}
+          </ol>
+
+          {knockedOut && <p className="knockout">Knockout. {knockedOut} has no points left.</p>}
+
+          {state.verdict && (
+            <section className="verdict" id="full-verdict" aria-label="Verdict in full">
+              <p className="verdict-label">Arbiter&rsquo;s ruling</p>
+              <p className="verdict-word">{RULING[state.verdict.ruling].word}</p>
+              <p className="verdict-line">
+                {RULING[state.verdict.ruling].line} Confidence {state.verdict.confidence}%.
+              </p>
+              <p className="verdict-summary">{unblind(state.verdict.summary, state.first)}</p>
+              {state.verdict.conditions.length > 0 && (
+                <ul className="conditions">
+                  {state.verdict.conditions.map((c) => (
+                    <li key={c}>{unblind(c, state.first)}</li>
+                  ))}
+                </ul>
+              )}
+              <p className="turning">Turning point: {turnLabel(state.verdict.turningPoint).toLowerCase()}.</p>
+            </section>
+          )}
+
+          {state.verdict && finished && <VerdictCard state={state} />}
+
+          {state.error && (
+            <p className="error" role="alert">
+              {explainError(state.error)}
+            </p>
+          )}
+          <div ref={feedEnd} className="feed-end" />
+        </section>
+      </aside>
     </div>
   );
 }
@@ -509,7 +630,7 @@ function VerdictCard({ state }: { state: CourtState }) {
   }
 
   return (
-    <section className="card" aria-label="Verdict card">
+    <section className="card" id="verdict-card" aria-label="Verdict card">
       <p className="verdict-label">Share the verdict</p>
       <canvas ref={canvas} className="card-image" role="img" aria-label={`Verdict card: ${data.idea}, ruled ${data.ruling.toLowerCase()}`} />
       <div className="card-actions">
