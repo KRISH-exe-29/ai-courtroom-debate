@@ -883,3 +883,39 @@ textarea {
   border-radius: 1px;
   transform: rotate(45deg) translateY(-2px);
 }
+
+/* ---------- verdict card ---------- */
+.card {
+  margin-top: 28px;
+}
+
+.card-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1200 / 630;
+  margin-top: 10px;
+  border: 1px solid var(--rail);
+  border-radius: 14px;
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  margin-top: 14px;
+}
+
+.ghost-button {
+  padding: 8px 18px;
+  border: 1px solid var(--rail);
+  border-radius: 999px;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+
+.ghost-button:hover {
+  border-color: var(--gold);
+}
