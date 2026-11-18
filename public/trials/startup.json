@@ -1,0 +1,330 @@
+[
+  {
+    "type": "filed",
+    "case": {
+      "idea": "Should I quit my job to build a startup?",
+      "context": "I have 8 months of savings and a working prototype."
+    },
+    "first": "AEGIS",
+    "at": 0
+  },
+  {
+    "type": "turn_start",
+    "turn": 0,
+    "lawyer": "AEGIS",
+    "phase": "opening",
+    "at": 0
+  },
+  {
+    "type": "speech_delta",
+    "turn": 0,
+    "text": "Quitting is defensible here because the two things that usually make it reckless are partly solved. You have a working prototype, so the idea is not just a slide deck, and you have eight months of runway, which buys real time to learn whether people will pay. Staying employed rarely lets you find that out, because a startup in spare hours moves slowly and gets starved of attention.\n\nI concede the risks. A prototype is not product-market fit, and eight months is short if fundraising or sales cycles drag. Savings also shrink faster than expected. But those risks can be managed rather than ignored: set a hard stop date, say month five, with a measurable milestone such as paying customers or signed pilots. If you miss it, you return to employment with a tested product and sharper skills. The downside is bounded; the upside of full-time focus is not.",
+    "at": 7190
+  },
+  {
+    "type": "turn_end",
+    "turn": 0,
+    "text": "Quitting is defensible here because the two things that usually make it reckless are partly solved. You have a working prototype, so the idea is not just a slide deck, and you have eight months of runway, which buys real time to learn whether people will pay. Staying employed rarely lets you find that out, because a startup in spare hours moves slowly and gets starved of attention.\n\nI concede the risks. A prototype is not product-market fit, and eight months is short if fundraising or sales cycles drag. Savings also shrink faster than expected. But those risks can be managed rather than ignored: set a hard stop date, say month five, with a measurable milestone such as paying customers or signed pilots. If you miss it, you return to employment with a tested product and sharper skills. The downside is bounded; the upside of full-time focus is not.",
+    "at": 7191
+  },
+  {
+    "type": "ruling",
+    "turn": 0,
+    "penalties": [],
+    "dropped": 0,
+    "at": 11523
+  },
+  {
+    "type": "turn_start",
+    "turn": 1,
+    "lawyer": "NEMESIS",
+    "phase": "opening",
+    "at": 11523
+  },
+  {
+    "type": "speech_delta",
+    "turn": 1,
+    "text": "The strongest version of this idea is a bounded bet: prototype built, runway set, stop date chosen. But the bound is weaker than Aegis claims. Eight months of savings is not eight months of runway if the number counts only rent and food. Quitting also usually ends employer health coverage and a salary-based credit profile, and it adds the cost of a gap on your résumé. Nothing in the case says those are covered.\n\nThe deeper flaw is that a working prototype measures your ability to build, not anyone's willingness to pay. Aegis proposes a month-five milestone, yet no customer evidence exists today. Why quit before testing demand? Selling pilots in evenings and weekends is slow, but it tells you whether the quit is justified. Resigning first buys speed on the wrong question, and it puts you under financial pressure that pushes founders toward bad decisions, like discounting heavily or taking weak deals just to show traction.",
+    "at": 18042
+  },
+  {
+    "type": "turn_end",
+    "turn": 1,
+    "text": "The strongest version of this idea is a bounded bet: prototype built, runway set, stop date chosen. But the bound is weaker than Aegis claims. Eight months of savings is not eight months of runway if the number counts only rent and food. Quitting also usually ends employer health coverage and a salary-based credit profile, and it adds the cost of a gap on your résumé. Nothing in the case says those are covered.\n\nThe deeper flaw is that a working prototype measures your ability to build, not anyone's willingness to pay. Aegis proposes a month-five milestone, yet no customer evidence exists today. Why quit before testing demand? Selling pilots in evenings and weekends is slow, but it tells you whether the quit is justified. Resigning first buys speed on the wrong question, and it puts you under financial pressure that pushes founders toward bad decisions, like discounting heavily or taking weak deals just to show traction.",
+    "at": 18042
+  },
+  {
+    "type": "ruling",
+    "turn": 1,
+    "penalties": [],
+    "dropped": 0,
+    "at": 24054
+  },
+  {
+    "type": "turn_start",
+    "turn": 2,
+    "lawyer": "AEGIS",
+    "phase": "rebuttal",
+    "at": 24054
+  },
+  {
+    "type": "speech_delta",
+    "turn": 2,
+    "text": "Nemesis is right on two points, and I concede them: the eight months must be counted against health coverage and all real expenses, not just rent and food, and a prototype proves nothing about demand. So the answer is not \"quit now, hope later.\" It is \"quit only after a cheap demand test, and if the numbers hold.\" That is a stronger version of my case, not a retreat.\n\nBut Nemesis overstates the evenings-and-weekends route. Pilots and paying customers usually need daytime calls, onsite demos and fast iteration, which a full-time job blocks. Slow validation is not free either; it burns the same savings in delay. And the pressure argument cuts both ways: a stop date and a price floor set in advance guard against desperate discounting. Test first for a few weeks, then resign if two or three buyers commit. That keeps the bet bounded while still ending the starvation of attention.",
+    "at": 31016
+  },
+  {
+    "type": "turn_end",
+    "turn": 2,
+    "text": "Nemesis is right on two points, and I concede them: the eight months must be counted against health coverage and all real expenses, not just rent and food, and a prototype proves nothing about demand. So the answer is not \"quit now, hope later.\" It is \"quit only after a cheap demand test, and if the numbers hold.\" That is a stronger version of my case, not a retreat.\n\nBut Nemesis overstates the evenings-and-weekends route. Pilots and paying customers usually need daytime calls, onsite demos and fast iteration, which a full-time job blocks. Slow validation is not free either; it burns the same savings in delay. And the pressure argument cuts both ways: a stop date and a price floor set in advance guard against desperate discounting. Test first for a few weeks, then resign if two or three buyers commit. That keeps the bet bounded while still ending the starvation of attention.",
+    "at": 31016
+  },
+  {
+    "type": "ruling",
+    "turn": 2,
+    "penalties": [],
+    "dropped": 0,
+    "at": 37384
+  },
+  {
+    "type": "turn_start",
+    "turn": 3,
+    "lawyer": "NEMESIS",
+    "phase": "rebuttal",
+    "at": 37384
+  },
+  {
+    "type": "speech_delta",
+    "turn": 3,
+    "text": "Aegis has now moved to my position: test demand first, quit only if buyers commit. That concedes the original question, \"should I quit now?\", should be answered no. What remains is whether \"a few weeks\" and \"two or three buyers\" are a sound trigger, and they are not. Verbal commitments from early contacts are cheap and often flattering; only signed, paid pilots count, and those rarely close in a few weeks. Two or three pilots also don't show a repeatable market. They may just show friendly buyers.\n\nOn daytime calls, a founder can take a few calls on lunch breaks or leave days, and the prototype can demo asynchronously. The job-blocks-everything claim is overstated. Meanwhile the job funds the test at no cost to savings. Aegis says delay burns savings, but delay while employed burns nothing. The eight months stay intact until the evidence is real. That is the asymmetry favoring waiting.",
+    "at": 43977
+  },
+  {
+    "type": "turn_end",
+    "turn": 3,
+    "text": "Aegis has now moved to my position: test demand first, quit only if buyers commit. That concedes the original question, \"should I quit now?\", should be answered no. What remains is whether \"a few weeks\" and \"two or three buyers\" are a sound trigger, and they are not. Verbal commitments from early contacts are cheap and often flattering; only signed, paid pilots count, and those rarely close in a few weeks. Two or three pilots also don't show a repeatable market. They may just show friendly buyers.\n\nOn daytime calls, a founder can take a few calls on lunch breaks or leave days, and the prototype can demo asynchronously. The job-blocks-everything claim is overstated. Meanwhile the job funds the test at no cost to savings. Aegis says delay burns savings, but delay while employed burns nothing. The eight months stay intact until the evidence is real. That is the asymmetry favoring waiting.",
+    "at": 43977
+  },
+  {
+    "type": "ruling",
+    "turn": 3,
+    "penalties": [],
+    "dropped": 0,
+    "at": 50354
+  },
+  {
+    "type": "turn_start",
+    "turn": 4,
+    "lawyer": "AEGIS",
+    "phase": "rebuttal",
+    "at": 50354
+  },
+  {
+    "type": "speech_delta",
+    "turn": 4,
+    "text": "Nemesis calls my position a concession, but I never claimed quitting today was right. I said quit when evidence justifies it, and the question is a decision rule, not a date. I accept the stronger trigger: signed, paid pilots, not verbal interest. That is a fair correction.\n\nBut the asymmetry argument has a gap. Waiting costs nothing only if the test can actually be run while employed. Paid pilots with real customers demand responsiveness, and lunch-break calls often cannot deliver that. If the evening test stalls, it yields ambiguity, not a no, and the founder stays employed indefinitely, which is the real trap: a safe job turns a bounded test into an open-ended one. Delay also has a cost Nemesis ignores, the price of an idea going stale.\n\nSo the answer is conditional: test while employed with a deadline, resign when paid commitments exist, or abandon if none do. That is a rule for quitting well, which is what the case asks.",
+    "at": 56665
+  },
+  {
+    "type": "turn_end",
+    "turn": 4,
+    "text": "Nemesis calls my position a concession, but I never claimed quitting today was right. I said quit when evidence justifies it, and the question is a decision rule, not a date. I accept the stronger trigger: signed, paid pilots, not verbal interest. That is a fair correction.\n\nBut the asymmetry argument has a gap. Waiting costs nothing only if the test can actually be run while employed. Paid pilots with real customers demand responsiveness, and lunch-break calls often cannot deliver that. If the evening test stalls, it yields ambiguity, not a no, and the founder stays employed indefinitely, which is the real trap: a safe job turns a bounded test into an open-ended one. Delay also has a cost Nemesis ignores, the price of an idea going stale.\n\nSo the answer is conditional: test while employed with a deadline, resign when paid commitments exist, or abandon if none do. That is a rule for quitting well, which is what the case asks.",
+    "at": 56665
+  },
+  {
+    "type": "objection",
+    "turn": 4,
+    "by": "AEGIS",
+    "ground": "MISCHARACTERIZATION",
+    "quote": "That concedes the original question, \"should I quit now?\", should be answered no.",
+    "at": 56665
+  },
+  {
+    "type": "ruling",
+    "turn": 4,
+    "penalties": [
+      {
+        "code": "CONTRADICTION",
+        "points": 3,
+        "reason": "Side A claims never to have argued for quitting now, but the opening defended quitting immediately and put the stop-date test after resigning.",
+        "quote": "I never claimed quitting today was right.",
+        "evidence": "Quitting is defensible here because the two things that usually make it reckless are partly solved."
+      }
+    ],
+    "dropped": 0,
+    "objection": "OVERRULED",
+    "at": 65119
+  },
+  {
+    "type": "hp_change",
+    "lawyer": "AEGIS",
+    "delta": -3,
+    "hp": 7,
+    "reason": "Side A claims never to have argued for quitting now, but the opening defended quitting immediately and put the stop-date test after resigning.",
+    "code": "CONTRADICTION",
+    "turn": 4,
+    "at": 65119
+  },
+  {
+    "type": "turn_start",
+    "turn": 5,
+    "lawyer": "NEMESIS",
+    "phase": "rebuttal",
+    "at": 65119
+  },
+  {
+    "type": "speech_delta",
+    "turn": 5,
+    "text": "Aegis now agrees the rule is: test while employed, quit only on signed, paid pilots. That is my position, so the live dispute is the \"open-ended trap.\" It is real, but it is solved by the same deadline Aegis already endorses, applied before quitting rather than after. Set a date, say three months, and if no paid pilot exists, you have learned the demand is weak at zero cost to savings. A stalled test is not ambiguity; failure to close a paid pilot in three months of effort is itself evidence.\n\nThe staleness claim is unsupported. Nothing in the case suggests a competitor window or a deadline. And the responsiveness worry is untested: nothing says pilots need instant daytime service. If they truly do, that is a finding about the market, not a reason to quit blind. So the answer to \"should I quit?\" is not yet, and quit only if paying customers exist.",
+    "at": 71064
+  },
+  {
+    "type": "turn_end",
+    "turn": 5,
+    "text": "Aegis now agrees the rule is: test while employed, quit only on signed, paid pilots. That is my position, so the live dispute is the \"open-ended trap.\" It is real, but it is solved by the same deadline Aegis already endorses, applied before quitting rather than after. Set a date, say three months, and if no paid pilot exists, you have learned the demand is weak at zero cost to savings. A stalled test is not ambiguity; failure to close a paid pilot in three months of effort is itself evidence.\n\nThe staleness claim is unsupported. Nothing in the case suggests a competitor window or a deadline. And the responsiveness worry is untested: nothing says pilots need instant daytime service. If they truly do, that is a finding about the market, not a reason to quit blind. So the answer to \"should I quit?\" is not yet, and quit only if paying customers exist.",
+    "at": 71064
+  },
+  {
+    "type": "ruling",
+    "turn": 5,
+    "penalties": [],
+    "dropped": 0,
+    "at": 76133
+  },
+  {
+    "type": "turn_start",
+    "turn": 6,
+    "lawyer": "AEGIS",
+    "phase": "rebuttal",
+    "at": 76133
+  },
+  {
+    "type": "speech_delta",
+    "turn": 6,
+    "text": "Nemesis is right that a pre-quit deadline fixes the open-ended trap, and I accept it. A three-month test while employed is a better rule than my month-five stop after resigning. I also concede the staleness point: nothing in the case shows a competitor window.\n\nSo we agree on the rule. What remains is what the case actually asks. \"Should I quit?\" is not \"not yet, forever.\" The honest answer is that quitting is justified once signed, paid pilots exist, and this person has the two assets that make that path realistic: a working prototype to sell and eight months of savings to fund the leap. Nemesis's \"not yet\" and my \"yes, on evidence\" are the same advice with different emphasis. The idea holds because it has a clear exit ramp: test, then commit or abandon. That is a defensible way to build a startup, not a reckless one.",
+    "at": 82182
+  },
+  {
+    "type": "turn_end",
+    "turn": 6,
+    "text": "Nemesis is right that a pre-quit deadline fixes the open-ended trap, and I accept it. A three-month test while employed is a better rule than my month-five stop after resigning. I also concede the staleness point: nothing in the case shows a competitor window.\n\nSo we agree on the rule. What remains is what the case actually asks. \"Should I quit?\" is not \"not yet, forever.\" The honest answer is that quitting is justified once signed, paid pilots exist, and this person has the two assets that make that path realistic: a working prototype to sell and eight months of savings to fund the leap. Nemesis's \"not yet\" and my \"yes, on evidence\" are the same advice with different emphasis. The idea holds because it has a clear exit ramp: test, then commit or abandon. That is a defensible way to build a startup, not a reckless one.",
+    "at": 82182
+  },
+  {
+    "type": "ruling",
+    "turn": 6,
+    "penalties": [],
+    "dropped": 0,
+    "at": 86434
+  },
+  {
+    "type": "turn_start",
+    "turn": 7,
+    "lawyer": "NEMESIS",
+    "phase": "rebuttal",
+    "at": 86434
+  },
+  {
+    "type": "speech_delta",
+    "turn": 7,
+    "text": "Aegis says our advice is the same with different emphasis. It is not, because the question asked was \"Should I quit my job?\" and the case gives no evidence that any paid pilot exists. On the facts as they stand, the answer is no. Aegis's \"yes, on evidence\" is an answer to a different question, one the person hasn't earned yet.\n\nEmphasis matters here. Calling the idea \"defensible\" invites someone with only a prototype and savings to resign now. Those two assets are exactly what Aegis admitted prove nothing about demand. The savings are also still uncounted against health coverage and real expenses, which Aegis conceded earlier.\n\nThere is also a gap left in the agreed rule: a trigger of one or two paid pilots still doesn't show that revenue can cover a founder's salary once savings run out. So the verdict is not yet. Run the three-month paid test while employed, then decide on revenue evidence, not on having a prototype and a cushion.",
+    "at": 92538
+  },
+  {
+    "type": "turn_end",
+    "turn": 7,
+    "text": "Aegis says our advice is the same with different emphasis. It is not, because the question asked was \"Should I quit my job?\" and the case gives no evidence that any paid pilot exists. On the facts as they stand, the answer is no. Aegis's \"yes, on evidence\" is an answer to a different question, one the person hasn't earned yet.\n\nEmphasis matters here. Calling the idea \"defensible\" invites someone with only a prototype and savings to resign now. Those two assets are exactly what Aegis admitted prove nothing about demand. The savings are also still uncounted against health coverage and real expenses, which Aegis conceded earlier.\n\nThere is also a gap left in the agreed rule: a trigger of one or two paid pilots still doesn't show that revenue can cover a founder's salary once savings run out. So the verdict is not yet. Run the three-month paid test while employed, then decide on revenue evidence, not on having a prototype and a cushion.",
+    "at": 92538
+  },
+  {
+    "type": "ruling",
+    "turn": 7,
+    "penalties": [],
+    "dropped": 0,
+    "at": 99134
+  },
+  {
+    "type": "turn_start",
+    "turn": 8,
+    "lawyer": "AEGIS",
+    "phase": "closing",
+    "at": 99134
+  },
+  {
+    "type": "speech_delta",
+    "turn": 8,
+    "text": "Nemesis is right on the literal facts: today the case shows no paid pilot, so resigning this week would be premature. I concede that, and I concede that a prototype and savings alone prove nothing about demand. Nemesis is also right that one or two pilots do not prove a founder's salary is covered, so the trigger should include revenue or a credible path to it, and the savings must be counted against health coverage and real expenses.\n\nBut \"not yet\" is not \"no.\" The idea of leaving to build this is sound because it comes with a clear sequence: a three-month paid test while employed, a revenue-based trigger, then commit or abandon. The person has what makes that sequence workable: something real to sell and a cushion if the evidence arrives. Reckless founders skip the test. This one need not. The verdict is: quit on evidence, not hope, and the idea holds on those terms.",
+    "at": 104963
+  },
+  {
+    "type": "turn_end",
+    "turn": 8,
+    "text": "Nemesis is right on the literal facts: today the case shows no paid pilot, so resigning this week would be premature. I concede that, and I concede that a prototype and savings alone prove nothing about demand. Nemesis is also right that one or two pilots do not prove a founder's salary is covered, so the trigger should include revenue or a credible path to it, and the savings must be counted against health coverage and real expenses.\n\nBut \"not yet\" is not \"no.\" The idea of leaving to build this is sound because it comes with a clear sequence: a three-month paid test while employed, a revenue-based trigger, then commit or abandon. The person has what makes that sequence workable: something real to sell and a cushion if the evidence arrives. Reckless founders skip the test. This one need not. The verdict is: quit on evidence, not hope, and the idea holds on those terms.",
+    "at": 104963
+  },
+  {
+    "type": "ruling",
+    "turn": 8,
+    "penalties": [],
+    "dropped": 0,
+    "at": 109012
+  },
+  {
+    "type": "turn_start",
+    "turn": 9,
+    "lawyer": "NEMESIS",
+    "phase": "closing",
+    "at": 109012
+  },
+  {
+    "type": "speech_delta",
+    "turn": 9,
+    "text": "Aegis's closing concedes the substance: today there is no paid pilot, a prototype and savings prove nothing about demand, the savings are uncounted against health coverage, and the trigger must include revenue. Once those are conceded, \"the idea holds\" describes a different idea, one where you stay employed and test first. The question asked was whether to quit, and on the facts given the answer is no.\n\nAegis says \"not yet\" is not \"no.\" True, but the person needs a decision today, and today's decision is to keep the job. Calling the quit \"sound\" rewards a founder holding only a prototype and a cushion, the two assets Aegis admitted prove nothing about demand.\n\nSo my verdict: do not quit now. Run a three-month paid test while employed. Count real expenses against the savings. Resign only if paying customers show revenue that can plausibly replace a salary. Evidence, not hope, decides.",
+    "at": 114494
+  },
+  {
+    "type": "turn_end",
+    "turn": 9,
+    "text": "Aegis's closing concedes the substance: today there is no paid pilot, a prototype and savings prove nothing about demand, the savings are uncounted against health coverage, and the trigger must include revenue. Once those are conceded, \"the idea holds\" describes a different idea, one where you stay employed and test first. The question asked was whether to quit, and on the facts given the answer is no.\n\nAegis says \"not yet\" is not \"no.\" True, but the person needs a decision today, and today's decision is to keep the job. Calling the quit \"sound\" rewards a founder holding only a prototype and a cushion, the two assets Aegis admitted prove nothing about demand.\n\nSo my verdict: do not quit now. Run a three-month paid test while employed. Count real expenses against the savings. Resign only if paying customers show revenue that can plausibly replace a salary. Evidence, not hope, decides.",
+    "at": 114494
+  },
+  {
+    "type": "ruling",
+    "turn": 9,
+    "penalties": [
+      {
+        "code": "REPETITION",
+        "points": 1,
+        "reason": "Restates the turn [7] point that Side A's 'sound' framing rewards a founder with only a prototype and savings, which Side A admitted prove nothing about demand. It adds no new reasoning.",
+        "quote": "Calling the quit \"sound\" rewards a founder holding only a prototype and a cushion, the two assets Side A admitted prove nothing about demand."
+      }
+    ],
+    "dropped": 0,
+    "at": 120777
+  },
+  {
+    "type": "hp_change",
+    "lawyer": "NEMESIS",
+    "delta": -1,
+    "hp": 9,
+    "reason": "Restates the turn [7] point that Side A's 'sound' framing rewards a founder with only a prototype and savings, which Side A admitted prove nothing about demand. It adds no new reasoning.",
+    "code": "REPETITION",
+    "turn": 9,
+    "at": 120777
+  },
+  {
+    "type": "verdict",
+    "ruling": "CONDITIONAL",
+    "conditions": [
+      "Do not resign now; keep the job while running a time-boxed (about three months) paid-pilot test",
+      "Resign only after signed, paid pilots exist, not verbal interest",
+      "Revenue or a credible path to it must plausibly replace a founder salary",
+      "Count the eight months of savings against health coverage and all real expenses, not just rent and food",
+      "Set a hard stop date and abandon the startup if no paid pilots close"
+    ],
+    "confidence": 80,
+    "summary": "Both sides converged on the same rule: test demand while employed, then quit only on signed, paid pilots with a revenue path. The remaining dispute was whether the answer to \"should I quit?\" is \"no\" (Side B) or \"yes, on evidence\" (Side A). The case offers only a prototype and eight months of savings. Neither shows demand, and Side A conceded this. The savings are also uncounted against health coverage and real expenses. So quitting today is not justified. Side A's point that an idea can be pursued on an exit-ramp sequence is valid, though, so the right outcome is conditional rather than a flat no. Side B argued more cleanly. Its strongest point was the asymmetry: while employed, the test costs no savings. Side A's concessions in turns 2, 4 and 6 made this point decisive.",
+    "turningPoint": 5,
+    "at": 127299
+  }
+]

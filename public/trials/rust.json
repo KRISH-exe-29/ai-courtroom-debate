@@ -1,0 +1,388 @@
+[
+  {
+    "type": "filed",
+    "case": {
+      "idea": "Should I learn Rust?",
+      "context": ""
+    },
+    "first": "AEGIS",
+    "at": 0
+  },
+  {
+    "type": "turn_start",
+    "turn": 0,
+    "lawyer": "AEGIS",
+    "phase": "opening",
+    "at": 0
+  },
+  {
+    "type": "speech_delta",
+    "turn": 0,
+    "text": "Learning Rust is worth it. It teaches memory ownership, a concept that makes you a better programmer in every language, because you learn to reason about who owns data and when it is freed. Its compiler catches whole classes of bugs before the program runs, so the effort spent learning pays back in fewer production failures. The question is whether to learn it, not whether to rewrite everything in it, and as a skill it has lasting value.",
+    "at": 0
+  },
+  {
+    "type": "turn_end",
+    "turn": 0,
+    "text": "Learning Rust is worth it. It teaches memory ownership, a concept that makes you a better programmer in every language, because you learn to reason about who owns data and when it is freed. Its compiler catches whole classes of bugs before the program runs, so the effort spent learning pays back in fewer production failures. The question is whether to learn it, not whether to rewrite everything in it, and as a skill it has lasting value.",
+    "at": 0
+  },
+  {
+    "type": "ruling",
+    "turn": 0,
+    "penalties": [],
+    "dropped": 0,
+    "at": 0
+  },
+  {
+    "type": "turn_start",
+    "turn": 1,
+    "lawyer": "NEMESIS",
+    "phase": "opening",
+    "at": 0
+  },
+  {
+    "type": "speech_delta",
+    "turn": 1,
+    "text": "Learning Rust is not worth it for most people. Its ownership rules and borrow checker make the learning curve steep, so weeks go into fighting the compiler instead of building things. Most jobs ask for Python, JavaScript or Java, so the time has a better return elsewhere. The memory lessons Aegis praises can be learned more cheaply in C or by reading about them. Without a concrete project that needs Rust, the effort buys little.",
+    "at": 0
+  },
+  {
+    "type": "turn_end",
+    "turn": 1,
+    "text": "Learning Rust is not worth it for most people. Its ownership rules and borrow checker make the learning curve steep, so weeks go into fighting the compiler instead of building things. Most jobs ask for Python, JavaScript or Java, so the time has a better return elsewhere. The memory lessons Aegis praises can be learned more cheaply in C or by reading about them. Without a concrete project that needs Rust, the effort buys little.",
+    "at": 0
+  },
+  {
+    "type": "ruling",
+    "turn": 1,
+    "penalties": [
+      {
+        "code": "UNSUPPORTED",
+        "points": 1,
+        "reason": "Claims a job-market fact that is not in the case and gives no source for it.",
+        "quote": "Most jobs ask for Python, JavaScript or Java"
+      }
+    ],
+    "dropped": 0,
+    "at": 0
+  },
+  {
+    "type": "hp_change",
+    "lawyer": "NEMESIS",
+    "delta": -1,
+    "hp": 9,
+    "reason": "Claims a job-market fact that is not in the case and gives no source for it.",
+    "code": "UNSUPPORTED",
+    "turn": 1,
+    "at": 0
+  },
+  {
+    "type": "turn_start",
+    "turn": 2,
+    "lawyer": "AEGIS",
+    "phase": "rebuttal",
+    "at": 0
+  },
+  {
+    "type": "speech_delta",
+    "turn": 2,
+    "text": "Nemesis says the curve is steep, but steepness is the point: the borrow checker forces the habits that prevent memory bugs, and those habits transfer. Nemesis offers C as a cheaper teacher, yet C lets those bugs through silently, so you learn them by crashing rather than by being told. And the claim about which jobs matter is not in this case at all. The question is whether learning Rust has value, and the compiler-as-teacher argument stands unanswered.",
+    "at": 0
+  },
+  {
+    "type": "turn_end",
+    "turn": 2,
+    "text": "Nemesis says the curve is steep, but steepness is the point: the borrow checker forces the habits that prevent memory bugs, and those habits transfer. Nemesis offers C as a cheaper teacher, yet C lets those bugs through silently, so you learn them by crashing rather than by being told. And the claim about which jobs matter is not in this case at all. The question is whether learning Rust has value, and the compiler-as-teacher argument stands unanswered.",
+    "at": 0
+  },
+  {
+    "type": "objection",
+    "turn": 2,
+    "by": "AEGIS",
+    "ground": "ASSUMES_FACTS",
+    "quote": "Most jobs ask for Python, JavaScript or Java",
+    "at": 0
+  },
+  {
+    "type": "ruling",
+    "turn": 2,
+    "penalties": [],
+    "dropped": 0,
+    "objection": "SUSTAINED",
+    "at": 0
+  },
+  {
+    "type": "hp_change",
+    "lawyer": "NEMESIS",
+    "delta": -1,
+    "hp": 8,
+    "reason": "Objection sustained.",
+    "code": "SUSTAINED",
+    "turn": 2,
+    "at": 0
+  },
+  {
+    "type": "turn_start",
+    "turn": 3,
+    "lawyer": "NEMESIS",
+    "phase": "rebuttal",
+    "at": 0
+  },
+  {
+    "type": "speech_delta",
+    "turn": 3,
+    "text": "Aegis calls steepness the point, but that only helps someone who finishes the climb. Many learners stall at the borrow checker and quit, so the transferable habits never arrive. Aegis says C teaches by crashing, yet crashing is also a lesson, and it costs less time. Aegis has still not named a project that needs Rust, and without one the habits stay theoretical. Value that depends on finishing a hard course is a risk, not a given.",
+    "at": 0
+  },
+  {
+    "type": "turn_end",
+    "turn": 3,
+    "text": "Aegis calls steepness the point, but that only helps someone who finishes the climb. Many learners stall at the borrow checker and quit, so the transferable habits never arrive. Aegis says C teaches by crashing, yet crashing is also a lesson, and it costs less time. Aegis has still not named a project that needs Rust, and without one the habits stay theoretical. Value that depends on finishing a hard course is a risk, not a given.",
+    "at": 0
+  },
+  {
+    "type": "ruling",
+    "turn": 3,
+    "penalties": [
+      {
+        "code": "UNSUPPORTED",
+        "points": 1,
+        "reason": "Asserts that many learners stall and quit with no support in the case.",
+        "quote": "Many learners stall at the borrow checker and quit"
+      }
+    ],
+    "dropped": 0,
+    "at": 0
+  },
+  {
+    "type": "hp_change",
+    "lawyer": "NEMESIS",
+    "delta": -1,
+    "hp": 7,
+    "reason": "Asserts that many learners stall and quit with no support in the case.",
+    "code": "UNSUPPORTED",
+    "turn": 3,
+    "at": 0
+  },
+  {
+    "type": "turn_start",
+    "turn": 4,
+    "lawyer": "AEGIS",
+    "phase": "rebuttal",
+    "at": 0
+  },
+  {
+    "type": "speech_delta",
+    "turn": 4,
+    "text": "Nemesis now argues that value depends on finishing, but every skill works that way, so it is no argument against Rust in particular. Nemesis also concedes that crashing in C teaches the same lesson, only slower, which admits the lesson is worth learning. On projects: the case asks whether to learn Rust, and a small command-line tool is enough to finish the climb. A bounded first project turns the risk Nemesis describes into a plan.",
+    "at": 0
+  },
+  {
+    "type": "turn_end",
+    "turn": 4,
+    "text": "Nemesis now argues that value depends on finishing, but every skill works that way, so it is no argument against Rust in particular. Nemesis also concedes that crashing in C teaches the same lesson, only slower, which admits the lesson is worth learning. On projects: the case asks whether to learn Rust, and a small command-line tool is enough to finish the climb. A bounded first project turns the risk Nemesis describes into a plan.",
+    "at": 0
+  },
+  {
+    "type": "ruling",
+    "turn": 4,
+    "penalties": [],
+    "dropped": 0,
+    "at": 0
+  },
+  {
+    "type": "turn_start",
+    "turn": 5,
+    "lawyer": "NEMESIS",
+    "phase": "rebuttal",
+    "at": 0
+  },
+  {
+    "type": "speech_delta",
+    "turn": 5,
+    "text": "Aegis says every skill needs finishing, but skills differ in cost, and Rust costs more to reach the useful part than most. I did not concede that the lesson needs Rust; I said C or reading teaches it cheaper. A small command-line tool is a fair first step, yet it changes my point only if the person has time to spare. Without knowing their goals, the safer advice is to learn Rust after a language they will use daily.",
+    "at": 0
+  },
+  {
+    "type": "turn_end",
+    "turn": 5,
+    "text": "Aegis says every skill needs finishing, but skills differ in cost, and Rust costs more to reach the useful part than most. I did not concede that the lesson needs Rust; I said C or reading teaches it cheaper. A small command-line tool is a fair first step, yet it changes my point only if the person has time to spare. Without knowing their goals, the safer advice is to learn Rust after a language they will use daily.",
+    "at": 0
+  },
+  {
+    "type": "ruling",
+    "turn": 5,
+    "penalties": [
+      {
+        "code": "UNSUPPORTED",
+        "points": 1,
+        "reason": "Asserts Rust costs more to reach usefulness than most skills without support.",
+        "quote": "Rust costs more to reach the useful part than most"
+      }
+    ],
+    "dropped": 0,
+    "at": 0
+  },
+  {
+    "type": "hp_change",
+    "lawyer": "NEMESIS",
+    "delta": -1,
+    "hp": 6,
+    "reason": "Asserts Rust costs more to reach usefulness than most skills without support.",
+    "code": "UNSUPPORTED",
+    "turn": 5,
+    "at": 0
+  },
+  {
+    "type": "turn_start",
+    "turn": 6,
+    "lawyer": "AEGIS",
+    "phase": "rebuttal",
+    "at": 0
+  },
+  {
+    "type": "speech_delta",
+    "turn": 6,
+    "text": "Nemesis now accepts a small first project as fair and narrows the dispute to time. But nothing in the case says the person lacks time, so Nemesis is arguing about a constraint we do not know exists. Learning Rust after another language is also compatible with learning it: that is a question of order, not of whether. Rust is the language that makes memory safety a habit, and that habit is worth the effort.",
+    "at": 0
+  },
+  {
+    "type": "turn_end",
+    "turn": 6,
+    "text": "Nemesis now accepts a small first project as fair and narrows the dispute to time. But nothing in the case says the person lacks time, so Nemesis is arguing about a constraint we do not know exists. Learning Rust after another language is also compatible with learning it: that is a question of order, not of whether. Rust is the language that makes memory safety a habit, and that habit is worth the effort.",
+    "at": 0
+  },
+  {
+    "type": "ruling",
+    "turn": 6,
+    "penalties": [
+      {
+        "code": "UNSUPPORTED",
+        "points": 1,
+        "reason": "Asserts Rust is the language that makes memory safety a habit without showing why others cannot.",
+        "quote": "Rust is the language that makes memory safety a habit"
+      }
+    ],
+    "dropped": 0,
+    "at": 0
+  },
+  {
+    "type": "hp_change",
+    "lawyer": "AEGIS",
+    "delta": -1,
+    "hp": 9,
+    "reason": "Asserts Rust is the language that makes memory safety a habit without showing why others cannot.",
+    "code": "UNSUPPORTED",
+    "turn": 6,
+    "at": 0
+  },
+  {
+    "type": "turn_start",
+    "turn": 7,
+    "lawyer": "NEMESIS",
+    "phase": "rebuttal",
+    "at": 0
+  },
+  {
+    "type": "speech_delta",
+    "turn": 7,
+    "text": "Aegis is right that the case says nothing about time, which is exactly why a blanket yes is risky: we also do not know the person goals. Aegis concedes the order question, and order matters, because the first language should serve daily needs. My position is not never, it is not first and not without a reason.",
+    "at": 0
+  },
+  {
+    "type": "turn_end",
+    "turn": 7,
+    "text": "Aegis is right that the case says nothing about time, which is exactly why a blanket yes is risky: we also do not know the person goals. Aegis concedes the order question, and order matters, because the first language should serve daily needs. My position is not never, it is not first and not without a reason.",
+    "at": 0
+  },
+  {
+    "type": "ruling",
+    "turn": 7,
+    "penalties": [
+      {
+        "code": "CONTRADICTION",
+        "points": 3,
+        "reason": "Opened by saying learning Rust is not worth it for most people, now says the position is only not first.",
+        "quote": "My position is not never, it is not first and not without a reason.",
+        "evidence": "Learning Rust is not worth it for most people."
+      }
+    ],
+    "dropped": 0,
+    "at": 0
+  },
+  {
+    "type": "hp_change",
+    "lawyer": "NEMESIS",
+    "delta": -3,
+    "hp": 3,
+    "reason": "Opened by saying learning Rust is not worth it for most people, now says the position is only not first.",
+    "code": "CONTRADICTION",
+    "turn": 7,
+    "at": 0
+  },
+  {
+    "type": "turn_start",
+    "turn": 8,
+    "lawyer": "AEGIS",
+    "phase": "closing",
+    "at": 0
+  },
+  {
+    "type": "speech_delta",
+    "turn": 8,
+    "text": "Nemesis began by saying Rust is not worth it for most people and ends by saying only not first. That retreat is the case for learning it. Its compiler turns memory mistakes into lessons, a small first project bounds the risk, and the order question leaves the answer as yes. Learn Rust, start small, and keep it as a lasting skill.",
+    "at": 0
+  },
+  {
+    "type": "turn_end",
+    "turn": 8,
+    "text": "Nemesis began by saying Rust is not worth it for most people and ends by saying only not first. That retreat is the case for learning it. Its compiler turns memory mistakes into lessons, a small first project bounds the risk, and the order question leaves the answer as yes. Learn Rust, start small, and keep it as a lasting skill.",
+    "at": 0
+  },
+  {
+    "type": "ruling",
+    "turn": 8,
+    "penalties": [],
+    "dropped": 0,
+    "at": 0
+  },
+  {
+    "type": "turn_start",
+    "turn": 9,
+    "lawyer": "NEMESIS",
+    "phase": "closing",
+    "at": 0
+  },
+  {
+    "type": "speech_delta",
+    "turn": 9,
+    "text": "Aegis calls my point a retreat, but it is the honest answer once goals are unknown: Rust is valuable, yet not every learner needs it now. The steep start is real, a first project only helps someone with time, and the cheaper paths to the memory lessons remain open. Learn Rust when a project calls for it.",
+    "at": 0
+  },
+  {
+    "type": "turn_end",
+    "turn": 9,
+    "text": "Aegis calls my point a retreat, but it is the honest answer once goals are unknown: Rust is valuable, yet not every learner needs it now. The steep start is real, a first project only helps someone with time, and the cheaper paths to the memory lessons remain open. Learn Rust when a project calls for it.",
+    "at": 0
+  },
+  {
+    "type": "ruling",
+    "turn": 9,
+    "penalties": [],
+    "dropped": 0,
+    "at": 0
+  },
+  {
+    "type": "verdict",
+    "ruling": "CONDITIONAL",
+    "conditions": [
+      "Start with a small, bounded project such as a command-line tool",
+      "Learn it alongside or after a language used daily if time is short"
+    ],
+    "confidence": 70,
+    "summary": "Both sides agree Rust teaches valuable memory-safety habits; the dispute narrowed to timing. Side B weakened its case with unsupported claims and by retreating from its opening position, while Side A kept a consistent line. The answer is yes, with a bounded first project and attention to available time.",
+    "turningPoint": 7,
+    "at": 1
+  }
+]
