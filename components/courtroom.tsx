@@ -6,12 +6,13 @@ import { createAnthropicClient } from "@/lib/engine/anthropic";
 import { CaseError, MAX_CONTEXT, MAX_IDEA, validateCase } from "@/lib/engine/case";
 import { createOpenAICompatibleClient } from "@/lib/engine/openai-compatible";
 import { GEMINI_BASE_URL, GEMINI_DEFAULT_MODEL } from "@/lib/engine/providers";
-import { reduceEvents } from "@/lib/engine/reduce";
+import { reduceEvents, type CourtState } from "@/lib/engine/reduce";
 import { GROUNDS, RUBRIC, START_HP } from "@/lib/engine/rubric";
 import { runTrial } from "@/lib/engine/trial";
 import type { EventOf, Lawyer, Phase, TrialEvent } from "@/lib/engine/types";
 import { playbackSteps, timelineMarkers, unblind } from "@/lib/web/playback";
 import { MAX_FILE_BYTES, parseTrialFile, toTrialFile, TrialFileError, trialFileName } from "@/lib/web/trial-file";
+import { cardData, drawVerdictCard } from "@/lib/web/verdict-card";
 
 const RECORDED = [
   { id: "startup", title: "Should I quit my job to build a startup?", note: "8 months of savings and a working prototype" },
@@ -359,6 +360,8 @@ export function Courtroom() {
               </section>
             )}
 
+            {state.verdict && !running && <VerdictCard state={state} />}
+
             {state.error && (
               <p className="error" role="alert">
                 {explainError(state.error)}
@@ -403,6 +406,87 @@ export function Courtroom() {
         </nav>
       )}
     </div>
+  );
+}
+
+/** The shareable verdict card: a 1200×630 image drawn in the browser, with download, copy and share. */
+function VerdictCard({ state }: { state: CourtState }) {
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const [status, setStatus] = useState("");
+  const [canShare, setCanShare] = useState(false);
+  const data = useMemo(() => cardData(state), [state]);
+
+  useEffect(() => {
+    if (!data || !canvas.current) return;
+    let live = true;
+    drawVerdictCard(canvas.current, data).then(() => {
+      if (!live) return;
+      try {
+        const probe = new File([""], "card.png", { type: "image/png" });
+        setCanShare(!!navigator.canShare?.({ files: [probe] }));
+      } catch {
+        setCanShare(false);
+      }
+    });
+    return () => {
+      live = false;
+    };
+  }, [data]);
+
+  if (!data) return null;
+  const name = trialFileName(data.idea).replace("courtroom-trial-", "courtroom-verdict-").replace(/\.json$/, ".png");
+  const blob = () => new Promise<Blob>((resolve, reject) => canvas.current?.toBlob((b) => (b ? resolve(b) : reject(new Error("no image"))), "image/png"));
+
+  async function download() {
+    const url = URL.createObjectURL(await blob());
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setStatus("Image downloaded.");
+  }
+
+  async function copy() {
+    try {
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob() })]);
+      setStatus("Image copied. Paste it anywhere.");
+    } catch {
+      setStatus("This browser can't copy images. Use Download image instead.");
+    }
+  }
+
+  async function share() {
+    try {
+      const file = new File([await blob()], name, { type: "image/png" });
+      await navigator.share({ files: [file], title: "Courtroom AI verdict", text: `The court's ruling on "${data!.idea}"` });
+      setStatus("");
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") setStatus("Sharing didn't work here. Use Download image instead.");
+    }
+  }
+
+  return (
+    <section className="card" aria-label="Verdict card">
+      <p className="verdict-label">Share the verdict</p>
+      <canvas ref={canvas} className="card-image" role="img" aria-label={`Verdict card: ${data.idea}, ruled ${data.ruling.toLowerCase()}`} />
+      <div className="card-actions">
+        <button className="primary" onClick={download}>
+          Download image
+        </button>
+        <button className="ghost-button" onClick={copy}>
+          Copy image
+        </button>
+        {canShare && (
+          <button className="ghost-button" onClick={share}>
+            Share
+          </button>
+        )}
+        <span className="hint" role="status">
+          {status}
+        </span>
+      </div>
+    </section>
   );
 }
 
