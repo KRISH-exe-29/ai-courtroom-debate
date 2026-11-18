@@ -17,6 +17,12 @@ A <b>blind AI judge</b> penalises every bluff, dodge and contradiction, then han
 
 <br/><br/>
 
+<a href="https://ai-courtroom-debate.vercel.app"><img src="https://img.shields.io/badge/⚖️_Try_it_live-ai--courtroom--debate.vercel.app-f5c451?style=for-the-badge&labelColor=0b0f1a" alt="Try it live at ai-courtroom-debate.vercel.app"/></a>
+
+<sub>Watch a recorded trial with no key, or run your own with a Claude or Gemini key that never leaves your browser.</sub>
+
+<br/><br/>
+
 <a href="#-quick-start"><img src="https://img.shields.io/badge/▶_Quick_start-1f2937?style=for-the-badge" alt="Quick start"/></a>
 <a href="#-watch-a-real-trial"><img src="https://img.shields.io/badge/🎬_Real_trial-1f2937?style=for-the-badge" alt="Real trial"/></a>
 <a href="#-the-rules-of-the-court"><img src="https://img.shields.io/badge/📏_Rubric-1f2937?style=for-the-badge" alt="Rubric"/></a>
@@ -110,7 +116,8 @@ sequenceDiagram
 ```bash
 git clone https://github.com/KRISH-exe-29/ai-courtroom-debate.git
 cd ai-courtroom-debate && npm install
-npm run trial -- "Should I learn Rust?"
+npm run trial -- "Should I learn Rust?"   # terminal courtroom
+npm run dev                              # web courtroom at http://localhost:3000
 ```
 
 **No API key? No problem.** If you have **Claude Code** or **Codex** installed, the courtroom runs on your existing login automatically.
@@ -216,10 +223,10 @@ tests/                 107 tests, no network needed
 - [x] 🔌 Claude, Gemini, OpenAI-compatible, Claude Code / Codex and step-by-step providers
 - [x] 📊 Evaluation harness and fallacy benchmark
 - [ ] 📈 Published baseline evaluation report
-- [ ] 🎨 **Web courtroom:** 2D stage, live HP, objection animations, bring-your-own-key
+- [x] 🎨 **Web courtroom:** 2D stage, live HP, objection stamps, bring-your-own-key
+- [x] 🌐 [Hosted demo](https://ai-courtroom-debate.vercel.app) with recorded trials
 - [ ] 🧊 3D courtroom mode
 - [ ] 🃏 Shareable verdict cards and trial replays
-- [ ] 🌐 Hosted demo
 - [ ] 🧑‍⚖️ Human-rater study: the AI judge vs people
 
 ## 🤝 Contributing
