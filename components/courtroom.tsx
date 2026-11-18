@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createAnthropicClient } from "@/lib/engine/anthropic";
@@ -26,6 +27,20 @@ const RULING: Record<"FOR" | "AGAINST" | "CONDITIONAL", { word: string; line: st
   CONDITIONAL: { word: "Conditional", line: "Go ahead only if the conditions below hold." },
 };
 const SPEEDS = [1, 2, 4];
+
+// three.js is large, so the 3D courtroom only downloads when someone switches to it.
+const Courtroom3D = dynamic(() => import("./courtroom-3d"), {
+  ssr: false,
+  loading: () => <div className="stage-loading">Building the courtroom…</div>,
+});
+
+function hasWebGL() {
+  try {
+    return !!document.createElement("canvas").getContext("webgl2");
+  } catch {
+    return false;
+  }
+}
 
 type Provider = "anthropic" | "gemini";
 type Mode = { kind: "idle" } | { kind: "recorded"; id: string } | { kind: "file"; name: string } | { kind: "live" };
@@ -66,6 +81,8 @@ export function Courtroom() {
   const [flash, setFlash] = useState<Flash>();
   const [pops, setPops] = useState<Pop[]>([]);
   const [tab, setTab] = useState<"recorded" | "live">("recorded");
+  const [view3d, setView3d] = useState(false);
+  const [noWebGL, setNoWebGL] = useState(false);
   /** How many events the rewind bar shows; undefined means all of them. */
   const [pos, setPos] = useState<number>();
   const [fileError, setFileError] = useState("");
@@ -208,10 +225,29 @@ export function Courtroom() {
           <ScalesIcon />
           <span>Courtroom AI</span>
         </Link>
-        <a className="ghost" href="https://github.com/KRISH-exe-29/ai-courtroom-debate">
-          Source on GitHub
-        </a>
+        <div className="top-actions">
+          {mode.kind !== "idle" && (
+            <button
+              className="ghost view-toggle"
+              aria-pressed={view3d}
+              onClick={() => {
+                if (!view3d && !hasWebGL()) return setNoWebGL(true);
+                setView3d((v) => !v);
+              }}
+            >
+              {view3d ? "2D view" : "3D view"}
+            </button>
+          )}
+          <a className="ghost" href="https://github.com/KRISH-exe-29/ai-courtroom-debate">
+            Source on GitHub
+          </a>
+        </div>
       </header>
+      {noWebGL && (
+        <p className="error top-note" role="alert">
+          This browser can&rsquo;t show 3D graphics (WebGL is off or unsupported), so the court stays in 2D.
+        </p>
+      )}
 
       <section className="hud" aria-label="Scoreboard">
         <Fighter lawyer="AEGIS" role="Defence" hp={state.hp.AEGIS} pops={pops} out={knockedOut === "AEGIS"} />
@@ -236,6 +272,12 @@ export function Courtroom() {
           <strong>{flash.text}</strong>
           {flash.sub && <span>{flash.sub}</span>}
         </div>
+      )}
+
+      {view3d && mode.kind !== "idle" && (
+        <section className="stage3d" aria-label="3D courtroom (the transcript below has the same content)">
+          <Courtroom3D state={state} reduced={typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches} />
+        </section>
       )}
 
       <main className="main">

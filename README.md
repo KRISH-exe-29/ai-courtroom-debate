@@ -225,8 +225,8 @@ tests/                 107 tests, no network needed
 - [ ] 📈 Published baseline evaluation report
 - [x] 🎨 **Web courtroom:** 2D stage, live HP, objection stamps, bring-your-own-key
 - [x] 🌐 [Hosted demo](https://ai-courtroom-debate.vercel.app) with recorded trials
-- [ ] 🧊 3D courtroom mode
-- [ ] 🃏 Shareable verdict cards and trial replays
+- [x] 🧊 3D courtroom mode (desktop; switch with the "3D view" button)
+- [x] 🃏 Shareable verdict cards, saved trial files and a rewind bar
 - [ ] 🧑‍⚖️ Human-rater study: the AI judge vs people
 
 ## 🤝 Contributing
