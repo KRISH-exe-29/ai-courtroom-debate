@@ -10,7 +10,8 @@ import { reduceEvents } from "@/lib/engine/reduce";
 import { GROUNDS, RUBRIC, START_HP } from "@/lib/engine/rubric";
 import { runTrial } from "@/lib/engine/trial";
 import type { EventOf, Lawyer, Phase, TrialEvent } from "@/lib/engine/types";
-import { playbackSteps, unblind } from "@/lib/web/playback";
+import { playbackSteps, timelineMarkers, unblind } from "@/lib/web/playback";
+import { MAX_FILE_BYTES, parseTrialFile, toTrialFile, TrialFileError, trialFileName } from "@/lib/web/trial-file";
 
 const RECORDED = [
   { id: "startup", title: "Should I quit my job to build a startup?", note: "8 months of savings and a working prototype" },
@@ -26,7 +27,8 @@ const RULING: Record<"FOR" | "AGAINST" | "CONDITIONAL", { word: string; line: st
 const SPEEDS = [1, 2, 4];
 
 type Provider = "anthropic" | "gemini";
-type Mode = { kind: "idle" } | { kind: "recorded"; id: string } | { kind: "live" };
+type Mode = { kind: "idle" } | { kind: "recorded"; id: string } | { kind: "file"; name: string } | { kind: "live" };
+const DOCKET: Record<Exclude<Mode["kind"], "idle">, string> = { recorded: "Recorded trial", file: "Opened from a saved trial", live: "Live trial" };
 type Flash = { key: number; text: string; sub?: string; tone: "objection" | "sustained" | "overruled" };
 type Pop = { key: number; lawyer: Lawyer; text: string };
 
@@ -63,8 +65,13 @@ export function Courtroom() {
   const [flash, setFlash] = useState<Flash>();
   const [pops, setPops] = useState<Pop[]>([]);
   const [tab, setTab] = useState<"recorded" | "live">("recorded");
+  /** How many events the rewind bar shows; undefined means all of them. */
+  const [pos, setPos] = useState<number>();
+  const [fileError, setFileError] = useState("");
 
   const runId = useRef(0);
+  /** The trial as it will be saved: the original log, not the word-by-word playback chunks. */
+  const sourceLog = useRef<TrialEvent[]>([]);
   const pausedRef = useRef(false);
   const speedRef = useRef(1);
   const skipRef = useRef(false);
@@ -76,14 +83,16 @@ export function Courtroom() {
     speedRef.current = speed;
   }, [paused, speed]);
 
-  const state = useMemo(() => reduceEvents(events), [events]);
-  const rulings = useMemo(() => events.filter((e): e is EventOf<"ruling"> => e.type === "ruling"), [events]);
+  const shown = useMemo(() => (pos === undefined ? events : events.slice(0, pos)), [events, pos]);
+  const state = useMemo(() => reduceEvents(shown), [shown]);
+  const rulings = useMemo(() => shown.filter((e): e is EventOf<"ruling"> => e.type === "ruling"), [shown]);
+  const markers = useMemo(() => (running ? [] : timelineMarkers(events)), [events, running]);
 
   useEffect(() => {
-    if (events.length === 0) return;
+    if (shown.length === 0) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    feedEnd.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "end" });
-  }, [events.length]);
+    feedEnd.current?.scrollIntoView({ behavior: reduced || pos !== undefined ? "auto" : "smooth", block: "end" });
+  }, [shown.length, pos]);
 
   /** Side effects of an event that the court state doesn't hold: stamps and damage pops. */
   function react(e: TrialEvent) {
@@ -105,6 +114,9 @@ export function Courtroom() {
     setFlash(undefined);
     setPops([]);
     setPaused(false);
+    setPos(undefined);
+    setFileError("");
+    sourceLog.current = [];
     setMode(next);
   }
 
@@ -113,6 +125,34 @@ export function Courtroom() {
     const run = runId.current;
     setRunning(true);
     const log: TrialEvent[] = await fetch(`/trials/${id}.json`).then((r) => r.json());
+    if (run === runId.current) await playLog(log, run);
+  }
+
+  async function openFile(file: File) {
+    setFileError("");
+    try {
+      if (file.size > MAX_FILE_BYTES) throw new TrialFileError("That file is too large to be a saved trial.");
+      const log = parseTrialFile(await file.text());
+      reset({ kind: "file", name: file.name });
+      setRunning(true);
+      await playLog(log, runId.current);
+    } catch (e) {
+      setFileError(e instanceof TrialFileError ? e.message : "That file couldn't be read.");
+    }
+  }
+
+  function saveTrial() {
+    const log = sourceLog.current.length ? sourceLog.current : events;
+    const url = URL.createObjectURL(new Blob([toTrialFile(log)], { type: "application/json" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = trialFileName(state.case?.idea ?? "trial");
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  async function playLog(log: TrialEvent[], run: number) {
+    sourceLog.current = log;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     for (const step of playbackSteps(log)) {
       if (!skipRef.current) {
@@ -143,6 +183,7 @@ export function Courtroom() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     for await (const e of runTrial(c, client, input.first === "random" ? {} : { first: input.first })) {
       if (run !== runId.current) return;
+      sourceLog.current = [...sourceLog.current, e];
       setEvents((ev) => [...ev, e]);
       if (!reduced) react(e);
     }
@@ -227,12 +268,32 @@ export function Courtroom() {
             ) : (
               <LiveForm onStart={runLive} />
             )}
+            <div className="open-file">
+              <label className="file-button">
+                <input
+                  type="file"
+                  accept=".json,application/json"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = "";
+                    if (file) openFile(file);
+                  }}
+                />
+                Open a saved trial
+              </label>
+              <span className="hint">Replays a trial file saved from this site or the terminal courtroom.</span>
+              {fileError && (
+                <p className="error" role="alert">
+                  {fileError}
+                </p>
+              )}
+            </div>
           </section>
         ) : (
           <section className="record" aria-live="polite">
             <div className="docket">
               <div>
-                <p className="docket-label">{mode.kind === "recorded" ? "Recorded trial" : "Live trial"}</p>
+                <p className="docket-label">{DOCKET[mode.kind]}</p>
                 <h1 className="docket-case">{state.case?.idea ?? "Filing the case…"}</h1>
                 {state.case?.context && <p className="docket-context">{state.case.context}</p>}
               </div>
@@ -309,8 +370,17 @@ export function Courtroom() {
       </main>
 
       {mode.kind !== "idle" && (
-        <nav className="controls" aria-label="Trial controls">
-          {mode.kind === "recorded" && running && (
+        <nav className={`controls${!running && events.length > 0 ? " has-timeline" : ""}`} aria-label="Trial controls">
+          {!running && events.length > 0 && (
+            <Timeline
+              length={events.length}
+              value={pos ?? events.length}
+              markers={markers}
+              turn={state.current}
+              onChange={(v) => setPos(v >= events.length ? undefined : v)}
+            />
+          )}
+          {mode.kind !== "live" && running && (
             <>
               <button onClick={() => setPaused((p) => !p)}>{paused ? "Resume" : "Pause"}</button>
               <div className="speeds" role="group" aria-label="Playback speed">
@@ -324,11 +394,73 @@ export function Courtroom() {
             </>
           )}
           {mode.kind === "live" && running && <button onClick={stop}>Stop trial</button>}
-          <button className="primary" onClick={() => reset({ kind: "idle" })}>
-            New trial
-          </button>
+          <div className="control-row">
+            {!running && events.length > 0 && <button onClick={saveTrial}>Save trial</button>}
+            <button className="primary" onClick={() => reset({ kind: "idle" })}>
+              New trial
+            </button>
+          </div>
         </nav>
       )}
+    </div>
+  );
+}
+
+/** The rewind bar: drag to any moment of a finished trial; markers jump to the notable ones. */
+function Timeline({
+  length,
+  value,
+  markers,
+  turn,
+  onChange,
+}: {
+  length: number;
+  value: number;
+  markers: { index: number; kind: string; label: string }[];
+  turn?: number;
+  onChange: (v: number) => void;
+}) {
+  // Markers closer than MIN_GAP% would cover each other, so later ones drop to a lower row.
+  const MIN_GAP = 2.5;
+  const lastInRow: number[] = [];
+  const items = markers.map((m) => {
+    const left = ((m.index - 1) / Math.max(1, length - 1)) * 100;
+    let row = lastInRow.findIndex((l) => left - l >= MIN_GAP);
+    if (row === -1) row = lastInRow.length;
+    lastInRow[row] = left;
+    return { ...m, left, row };
+  });
+  const placed = { items, rows: Math.max(1, lastInRow.length) };
+
+  return (
+    <div className="timeline">
+      <input
+        type="range"
+        min={1}
+        max={length}
+        value={value}
+        aria-label="Rewind the trial"
+        aria-valuetext={value >= length ? "End of the trial" : `Turn ${(turn ?? 0) + 1}`}
+        onChange={(e) => onChange(Number(e.target.value))}
+      />
+      <div className="markers" style={{ height: `${placed.rows * 14}px` }}>
+        {placed.items.map((m) => (
+          <button
+            key={`${m.kind}-${m.index}`}
+            className={`marker marker-${m.kind}`}
+            style={{ left: `${m.left}%`, top: `${m.row * 14}px` }}
+            title={m.label}
+            aria-label={`Jump to: ${m.label}`}
+            onClick={() => onChange(m.index)}
+          />
+        ))}
+      </div>
+      <div className="legend" aria-hidden>
+        <span className="key key-penalty">HP lost</span>
+        <span className="key key-objection">Objection</span>
+        <span className="key key-turning">Turning point</span>
+        <span className="key key-verdict">Verdict</span>
+      </div>
     </div>
   );
 }

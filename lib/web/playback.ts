@@ -11,6 +11,25 @@ export const unblind = (text: string, first: Lawyer = "AEGIS") =>
 
 export type Step = { event: TrialEvent; delay: number };
 
+export type Marker = { index: number; kind: "penalty" | "objection" | "turning" | "verdict"; label: string };
+
+/**
+ * Where the notable moments sit in an event log, for the rewind bar. `index` is the number of
+ * events to show so the moment has just happened.
+ */
+export function timelineMarkers(events: TrialEvent[]): Marker[] {
+  const verdict = events.find((e) => e.type === "verdict");
+  const turning = verdict?.type === "verdict" ? verdict.turningPoint : -1;
+  const markers: Marker[] = [];
+  events.forEach((e, i) => {
+    if (e.type === "hp_change") markers.push({ index: i + 1, kind: "penalty", label: `${e.lawyer} loses ${-e.delta} HP, turn ${e.turn + 1}` });
+    else if (e.type === "objection") markers.push({ index: i + 1, kind: "objection", label: `${e.by} objects, turn ${e.turn + 1}` });
+    else if (e.type === "turn_start" && e.turn === turning) markers.push({ index: i + 1, kind: "turning", label: `Turning point, turn ${e.turn + 1}` });
+    else if (e.type === "verdict") markers.push({ index: i + 1, kind: "verdict", label: "The verdict" });
+  });
+  return markers;
+}
+
 /** Pause before each event type, in ms at 1× speed. */
 const PAUSE: Partial<Record<TrialEvent["type"], number>> = {
   filed: 500,
