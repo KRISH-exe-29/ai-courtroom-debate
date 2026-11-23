@@ -33,6 +33,20 @@ A <b>blind AI judge</b> penalises every bluff, dodge and contradiction, then han
 
 <img src=".github/assets/divider.svg" width="100%" alt=""/>
 
+## 🎞️ The 30-second film
+
+<a href="docs/film/courtroom.mp4">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/film/courtroom-dark.gif">
+    <source media="(prefers-color-scheme: light)" srcset="docs/film/courtroom-light.gif">
+    <img src="docs/film/courtroom-dark.gif" width="100%" alt="Animated comic-book film: one AI says great idea, so AEGIS and NEMESIS argue it out while the blind judge ARBITER docks points">
+  </picture>
+</a>
+
+<p align="center"><sub>AI Courtroom Debate in 30 seconds. The preview plays silently with subtitles; <a href="docs/film/courtroom.mp4">open the MP4</a> for the narrated version with music.</sub></p>
+
+<img src=".github/assets/divider.svg" width="100%" alt=""/>
+
 ## 🏛️ Meet the court
 
 <table align="center">
